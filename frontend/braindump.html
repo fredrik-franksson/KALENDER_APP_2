@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrainDump</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper:   #F3F1EC;
+      --ink:     #0F0F0E;
+      --ink-2:   #6E6B66;
+      --rule:    #CBC8C2;
+      --surface: #E7E5E0;
+      --green:   #1B3D2C;
+      --red:     #B91C1C;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Wrap ── */
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    @media (max-width: 600px) {
+      .wrap { padding: 0 20px; }
+    }
+
+    /* ── Masthead ── */
+    .masthead {
+      padding: 32px 0 24px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .masthead-wordmark {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .masthead-family {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--ink-2);
+      text-decoration: none;
+      transition: color 0.15s;
+      margin-left: 16px;
+    }
+    .masthead-family:hover { color: var(--ink); }
+
+    .masthead-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--ink-2);
+      text-align: right;
+    }
+
+    /* ── Language toggle ── */
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      color: var(--ink-2);
+      padding: 0;
+      transition: color 0.15s;
+    }
+    .lang-btn.active { color: var(--ink); }
+    .lang-btn:hover  { color: var(--ink); }
+
+    .lang-sep {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--rule);
+      user-select: none;
+    }
+
+    /* ── Input section ── */
+    .input-section {
+      padding: 52px 0 44px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.63rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      margin-bottom: 22px;
+    }
+
+    textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--rule);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--ink);
+      padding: 0 0 18px;
+      resize: none;
+      outline: none;
+      min-height: 100px;
+      transition: border-color 0.2s;
+    }
+    textarea::placeholder { color: var(--ink-2); font-style: italic; }
+    textarea:focus         { border-bottom-color: var(--ink); }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .btn-process {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 11px 28px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-process:hover:not(:disabled) { background: var(--green); }
+    .btn-process:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    .btn-mic {
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      padding: 10px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.15s;
+    }
+    .btn-mic:hover:not(:disabled) { border-color: var(--ink); }
+    .btn-mic:disabled               { opacity: 0.35; cursor: not-allowed; }
+    .btn-mic.recording              { border-color: var(--red); color: var(--red); }
+
+    .mic-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-mic.recording .mic-dot {
+      background: var(--red);
+      animation: blink 1s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .status-line {
+      margin-top: 18px;
+      font-size: 0.8rem;
+      color: var(--ink-2);
+      font-style: italic;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid var(--rule);
+      border-top-color: var(--ink);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-line {
+      margin-top: 14px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--red);
+      display: none;
+    }
+
+    /* ── Day panels (Today / Tomorrow) ── */
+    .day-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      padding: 40px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    @media (max-width: 620px) {
+      .day-panels { grid-template-columns: 1fr; gap: 32px; }
+    }
+
+    .day-panel-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.63rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      margin-bottom: 6px;
+    }
+    .day-panel-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.3rem, 2vw, 1.7rem);
+      color: var(--ink);
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    /* ── Month navigation ── */
+    .month-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 36px 0 28px;
+    }
+    .month-nav-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      color: var(--ink);
+      line-height: 1;
+    }
+    .month-arrow {
+      background: none;
+      border: 1px solid var(--rule);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--ink-2);
+      padding: 8px 18px;
+      cursor: pointer;
+      line-height: 1;
+      transition: border-color 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+    .month-arrow:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* ── Calendar grid ── */
+    .cal-section { padding-bottom: 80px; }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      margin-bottom: 4px;
+    }
+    .cal-weekday {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      text-align: center;
+      padding-bottom: 8px;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+    }
+    .cal-day {
+      background: var(--paper);
+      aspect-ratio: 1;
+      min-height: 68px;
+      padding: 7px 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .cal-day.other-month { background: var(--surface); }
+    .cal-day.today       { background: var(--ink); }
+
+    .cal-day-num {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      line-height: 1;
+      color: var(--ink-2);
+      margin-bottom: 5px;
+    }
+    .cal-day.today .cal-day-num       { color: var(--paper); opacity: 0.7; }
+    .cal-day.other-month .cal-day-num { color: var(--rule); }
+
+    .cal-item {
+      display: block;
+      font-size: 0.64rem;
+      font-weight: 400;
+      line-height: 1.25;
+      color: var(--ink);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .cal-item.urgent                  { color: var(--red); }
+    .cal-day.today .cal-item          { color: var(--paper); }
+    .cal-day.today .cal-item.urgent   { color: #ffaaaa; }
+    .cal-day.other-month .cal-item    { color: var(--ink-2); }
+
+    .cal-item-more {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.55rem;
+      color: var(--ink-2);
+      margin-top: 2px;
+    }
+    .cal-day.today .cal-item-more { color: var(--paper); opacity: 0.5; }
+
+    /* ── Shared item list (day panels) ── */
+    .empty-state {
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      color: var(--rule);
+      user-select: none;
+    }
+
+    .item-list { list-style: none; display: none; }
+
+    .item-list li {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0 16px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--surface);
+      font-size: 0.9rem;
+      font-weight: 300;
+      line-height: 1.5;
+      animation: fadeUp 0.25s ease both;
+    }
+    .item-list li:last-child { border-bottom: none; }
+
+    .item-title { flex: 1; }
+
+    .item-when {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--ink-2);
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+
+    .item-note {
+      flex-basis: 100%;
+      font-size: 0.76rem;
+      color: var(--ink-2);
+      font-style: italic;
+      margin-top: 3px;
+      padding-left: 1px;
+    }
+
+    .item-delete {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--rule);
+      padding: 2px 0 2px 8px;
+      flex-shrink: 0;
+      line-height: 0;
+      opacity: 0;
+      transition: opacity 0.15s, color 0.15s;
+    }
+    .item-list li:hover .item-delete { opacity: 1; }
+    .item-delete:hover                { color: var(--red); }
+
+    .item-list li.urgent {
+      padding-left: 14px;
+      border-left: 2px solid var(--red);
+    }
+    .item-list li.urgent .item-title { color: var(--red); }
+
+    .item-urgent-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Share to group button ── */
+    .item-share {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.06em;
+      color: var(--rule);
+      padding: 2px 0 2px 8px;
+      flex-shrink: 0;
+      transition: color 0.15s, opacity 0.15s;
+      opacity: 0;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .item-list li:hover .item-share { opacity: 1; }
+    .item-share:hover                { color: var(--green); }
+    .item-share.shared               { color: var(--green); opacity: 1 !important; }
+    .item-share.error-share          { color: var(--red);   opacity: 1 !important; }
+
+    /* ── Clickable calendar cells ── */
+    .cal-day          { cursor: pointer; }
+    .cal-day:not(.other-month):hover:not(.today) { background: var(--surface); }
+    .cal-day.selected { outline: 2px solid var(--ink); outline-offset: -2px; }
+    .cal-day.today.selected { outline: 2px solid var(--paper); outline-offset: -3px; }
+
+    /* ── Day detail panel ── */
+    .day-detail {
+      padding: 28px 0 0;
+      display: none;
+    }
+    .day-detail-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.3rem, 2vw, 1.7rem);
+      color: var(--ink);
+      margin-bottom: 14px;
+    }
+    .day-detail-empty {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--rule);
+    }
+    .day-detail-no-group {
+      font-size: 0.8rem;
+      color: var(--ink-2);
+      margin-top: 12px;
+    }
+    .day-detail-no-group a {
+      color: var(--ink);
+      text-decoration: underline;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .item-list li { animation: none; }
+      .spinner      { animation: none; }
+      .mic-dot      { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="masthead">
+      <span class="masthead-wordmark">BrainDump</span>
+      <a href="/family.html" class="masthead-family" id="familyLink">Group Schedule</a>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="langEn">EN</button>
+        <span class="lang-sep">·</span>
+        <button class="lang-btn" id="langSv">SV</button>
+      </div>
+      <span class="masthead-date" id="mastheadDate"></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- Input -->
+    <section class="input-section">
+      <p class="eyebrow" id="eyebrow">New entry</p>
+      <textarea id="inputText" placeholder="What's on your mind…" rows="4"></textarea>
+      <div class="controls">
+        <button class="btn-process" id="processBtn">Process</button>
+        <button class="btn-mic" id="micBtn">
+          <span class="mic-dot"></span>
+          <span id="micLabel">Record</span>
+        </button>
+      </div>
+      <div class="status-line" id="status"></div>
+      <div class="error-line" id="error"></div>
+    </section>
+
+    <!-- Today & Tomorrow -->
+    <div class="day-panels">
+      <div class="day-panel">
+        <p class="day-panel-eyebrow" id="todayLabel">Today</p>
+        <p class="day-panel-date"    id="todayDate"></p>
+        <p class="empty-state"       id="todayEmpty">—</p>
+        <ul class="item-list"        id="todayList"></ul>
+      </div>
+      <div class="day-panel">
+        <p class="day-panel-eyebrow" id="tomorrowLabel">Tomorrow</p>
+        <p class="day-panel-date"    id="tomorrowDate"></p>
+        <p class="empty-state"       id="tomorrowEmpty">—</p>
+        <ul class="item-list"        id="tomorrowList"></ul>
+      </div>
+    </div>
+
+    <!-- Month navigation -->
+    <div class="month-nav-bar">
+      <button class="month-arrow" id="prevMonth" aria-label="Previous month">←</button>
+      <span class="month-nav-heading" id="monthNavHeading"></span>
+      <button class="month-arrow" id="nextMonth" aria-label="Next month">→</button>
+    </div>
+
+    <!-- Calendar -->
+    <div class="cal-section">
+      <div class="cal-weekdays" id="calWeekdays"></div>
+      <div class="cal-grid"     id="calGrid"></div>
+      <div class="day-detail"   id="dayDetail"></div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  const T = {
+    en: {
+      dateLocale:    'en-GB',
+      voiceLang:     'en-US',
+      eyebrow:       'New entry',
+      placeholder:   "What's on your mind…",
+      process:       'Process',
+      record:        'Record',
+      stop:          'Stop',
+      processing:    'Processing…',
+      listening:     'Listening…',
+      nothing:       'Nothing to process — write something first.',
+      notHeard:      'Nothing was heard — please try again.',
+      micDenied:     'Microphone access denied.',
+      voiceErr:      'Voice error: ',
+      urgentTag:     'urgent',
+      groupSchedule: 'Group Schedule',
+      today:         'Today',
+      tomorrow:      'Tomorrow',
+      weekdays:      ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      shareBtn:      '→ group',
+      shared:        '✓ shared',
+      shareErr:      '✗ failed',
+      dayDetailEmpty:  'No items for this day.',
+      dayDetailNoGroup: (href) => `<a href="${href}">Connect to a group</a> to share items.`,
+    },
+    sv: {
+      dateLocale:    'sv-SE',
+      voiceLang:     'sv-SE',
+      eyebrow:       'Ny anteckning',
+      placeholder:   'Vad har du på hjärtat…',
+      process:       'Bearbeta',
+      record:        'Spela in',
+      stop:          'Stopp',
+      processing:    'Bearbetar…',
+      listening:     'Lyssnar…',
+      nothing:       'Inget att bearbeta — skriv något först.',
+      notHeard:      'Inget hördes — försök igen.',
+      micDenied:     'Mikrofonåtkomst nekad.',
+      voiceErr:      'Röstfel: ',
+      urgentTag:     'brådskande',
+      groupSchedule: 'Gruppschemat',
+      today:         'Idag',
+      tomorrow:      'Imorgon',
+      weekdays:      ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön'],
+      shareBtn:      '→ grupp',
+      shared:        '✓ delad',
+      shareErr:      '✗ misslyckades',
+      dayDetailEmpty:  'Inga uppgifter för denna dag.',
+      dayDetailNoGroup: (href) => `<a href="${href}">Anslut till en grupp</a> för att dela uppgifter.`,
+    },
+  };
+
+  const LANG_KEY  = 'braindump_lang';
+  let currentLang = localStorage.getItem(LANG_KEY) || 'en';
+  const t         = () => T[currentLang];
+
+  const textarea   = document.getElementById('inputText');
+  const micBtn     = document.getElementById('micBtn');
+  const micLabel   = document.getElementById('micLabel');
+  const processBtn = document.getElementById('processBtn');
+  const statusEl   = document.getElementById('status');
+  const errorEl    = document.getElementById('error');
+
+  const STORAGE_KEY = 'braindump_items';
+  let recording     = false;
+
+  // ── Group connection ──────────────────────────────────────────────────
+  const familyCode    = localStorage.getItem('family_code')  || '';
+  const familyName    = localStorage.getItem('family_name')  || '';
+  const groupConnected = !!(familyCode && familyName);
+
+  async function shareToGroup(item, btn) {
+    btn.disabled    = true;
+    btn.textContent = '…';
+    try {
+      const res = await fetch('/api/family/events', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'x-family-code': familyCode },
+        body:    JSON.stringify({
+          title:     item.title,
+          date:      item.when ? item.when.split('T')[0] : null,
+          notes:     item.notes || '',
+          createdBy: familyName,
+        }),
+      });
+      if (res.ok) {
+        btn.textContent = t().shared;
+        btn.classList.add('shared');
+      } else {
+        btn.textContent = t().shareErr;
+        btn.classList.add('error-share');
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = t().shareErr;
+      btn.classList.add('error-share');
+      btn.disabled = false;
+    }
+  }
+
+  // ── Day detail (calendar click) ───────────────────────────────────────
+  let selectedDay = null;
+
+  const DAYS = {
+    en: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    sv: ['söndag','måndag','tisdag','onsdag','torsdag','fredag','lördag'],
+  };
+  const MONTHS = {
+    en: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    sv: ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'],
+  };
+
+  function toDateISO(d) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  function getCurrentMonth() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  function stepMonth(key, delta) {
+    const [y, m] = key.split('-').map(Number);
+    const d = new Date(y, m - 1 + delta, 1);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  function monthLabel(key, lang) {
+    const [y, m] = key.split('-').map(Number);
+    return `${MONTHS[lang][m - 1]} ${y}`;
+  }
+
+  function formatDate(lang) {
+    const d = new Date();
+    return `${DAYS[lang][d.getDay()]} ${d.getDate()} ${MONTHS[lang][d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function formatDayDate(d, lang) {
+    return `${DAYS[lang][d.getDay()]} ${d.getDate()} ${MONTHS[lang][d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function formatItemTime(when, lang) {
+    if (!when) return '';
+    const t = when.split('T')[1];
+    if (!t) return '';
+    return lang === 'sv' ? `kl ${t}` : `at ${t}`;
+  }
+
+  let activeMonth = getCurrentMonth();
+
+  function buildItemIndex(stored) {
+    const idx = {};
+    for (const items of Object.values(stored)) {
+      for (const item of items) {
+        if (!item.when) continue;
+        const dateKey = item.when.split('T')[0];
+        if (!idx[dateKey]) idx[dateKey] = [];
+        idx[dateKey].push(item);
+      }
+    }
+    return idx;
+  }
+
+  function renderDayPanels() {
+    const stored = loadFromStorage();
+    const index  = buildItemIndex(stored);
+    const tr     = t();
+
+    const today    = new Date();
+    const todayISO = toDateISO(today);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    const tomorrowISO = toDateISO(tomorrow);
+
+    document.getElementById('todayLabel').textContent    = tr.today;
+    document.getElementById('tomorrowLabel').textContent = tr.tomorrow;
+    document.getElementById('todayDate').textContent     = formatDayDate(today, currentLang);
+    document.getElementById('tomorrowDate').textContent  = formatDayDate(tomorrow, currentLang);
+
+    renderDayList('today',    index[todayISO]    || []);
+    renderDayList('tomorrow', index[tomorrowISO] || []);
+  }
+
+  function renderDayList(id, items) {
+    const tr      = t();
+    const listEl  = document.getElementById(`${id}List`);
+    const emptyEl = document.getElementById(`${id}Empty`);
+
+    listEl.innerHTML = '';
+
+    if (items.length === 0) {
+      listEl.style.display  = 'none';
+      emptyEl.style.display = 'block';
+      return;
+    }
+
+    items.forEach(({ title, when, urgent, notes, monthKey }, i) => {
+      const li = document.createElement('li');
+      if (urgent) li.classList.add('urgent');
+      li.style.animationDelay = `${i * 40}ms`;
+
+      const titleSpan = document.createElement('span');
+      titleSpan.className   = 'item-title';
+      titleSpan.textContent = title;
+      li.appendChild(titleSpan);
+
+      const timeStr = formatItemTime(when, currentLang);
+      if (timeStr) {
+        const whenSpan = document.createElement('span');
+        whenSpan.className   = 'item-when';
+        whenSpan.textContent = timeStr;
+        li.appendChild(whenSpan);
+      }
+
+      if (urgent) {
+        const tag = document.createElement('span');
+        tag.className   = 'item-urgent-tag';
+        tag.textContent = tr.urgentTag;
+        li.appendChild(tag);
+      }
+
+      if (groupConnected) {
+        const shareBtn = document.createElement('button');
+        shareBtn.className   = 'item-share';
+        shareBtn.textContent = tr.shareBtn;
+        shareBtn.addEventListener('click', () => shareToGroup({ title, when, notes }, shareBtn));
+        li.appendChild(shareBtn);
+      }
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.className = 'item-delete';
+      deleteBtn.setAttribute('aria-label', 'Remove item');
+      deleteBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1.5 3h10M4.5 3V1.5h4V3M3 3l.6 8h5.8L10 3"/></svg>`;
+      deleteBtn.addEventListener('click', () => deleteItem(monthKey, title));
+      li.appendChild(deleteBtn);
+
+      if (notes) {
+        const noteEl = document.createElement('span');
+        noteEl.className   = 'item-note';
+        noteEl.textContent = notes;
+        li.appendChild(noteEl);
+      }
+
+      listEl.appendChild(li);
+    });
+
+    listEl.style.display  = 'block';
+    emptyEl.style.display = 'none';
+  }
+
+  function renderWeekdayHeaders(lang) {
+    const container = document.getElementById('calWeekdays');
+    container.innerHTML = '';
+    for (const name of T[lang].weekdays) {
+      const el = document.createElement('span');
+      el.className   = 'cal-weekday';
+      el.textContent = name;
+      container.appendChild(el);
+    }
+  }
+
+  function renderCalendar(monthKey) {
+    document.getElementById('monthNavHeading').textContent = monthLabel(monthKey, currentLang);
+
+    const stored   = loadFromStorage();
+    const index    = buildItemIndex(stored);
+    const todayISO = toDateISO(new Date());
+
+    const [year, month] = monthKey.split('-').map(Number);
+    const firstDow      = (new Date(year, month - 1, 1).getDay() + 6) % 7;
+    const daysInMonth   = new Date(year, month, 0).getDate();
+
+    const prevYear  = month === 1 ? year - 1 : year;
+    const prevMonth = month === 1 ? 12 : month - 1;
+    const prevDays  = new Date(prevYear, prevMonth, 0).getDate();
+    const nextYear  = month === 12 ? year + 1 : year;
+    const nextMonth = month === 12 ? 1 : month + 1;
+
+    const cells = [];
+    for (let i = firstDow - 1; i >= 0; i--) {
+      const day     = prevDays - i;
+      const dateKey = `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      cells.push({ day, dateKey, thisMonth: false });
+    }
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateKey = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      cells.push({ day, dateKey, thisMonth: true });
+    }
+    const remaining = (7 - (cells.length % 7)) % 7;
+    for (let day = 1; day <= remaining; day++) {
+      const dateKey = `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      cells.push({ day, dateKey, thisMonth: false });
+    }
+
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+
+    for (const { day, dateKey, thisMonth } of cells) {
+      const cell = document.createElement('div');
+      cell.className = 'cal-day';
+      if (!thisMonth)           cell.classList.add('other-month');
+      if (dateKey === todayISO) cell.classList.add('today');
+
+      const num = document.createElement('span');
+      num.className   = 'cal-day-num';
+      num.textContent = day;
+      cell.appendChild(num);
+
+      const dayItems = index[dateKey] || [];
+      const shown    = dayItems.slice(0, 2);
+      const extra    = dayItems.length - shown.length;
+
+      for (const item of shown) {
+        const el = document.createElement('span');
+        el.className   = 'cal-item' + (item.urgent ? ' urgent' : '');
+        el.textContent = item.title;
+        cell.appendChild(el);
+      }
+
+      if (extra > 0) {
+        const more = document.createElement('span');
+        more.className   = 'cal-item-more';
+        more.textContent = `+${extra}`;
+        cell.appendChild(more);
+      }
+
+      if (dateKey === selectedDay) cell.classList.add('selected');
+
+      cell.addEventListener('click', () => {
+        selectedDay = selectedDay === dateKey ? null : dateKey;
+        renderCalendar(activeMonth);
+        renderDayDetail(selectedDay);
+      });
+
+      grid.appendChild(cell);
+    }
+  }
+
+  function renderDayDetail(dateKey) {
+    const detailEl = document.getElementById('dayDetail');
+    if (!dateKey) { detailEl.style.display = 'none'; return; }
+
+    const stored = loadFromStorage();
+    const index  = buildItemIndex(stored);
+    const items  = index[dateKey] || [];
+    const tr     = t();
+
+    const [y, m, d] = dateKey.split('-').map(Number);
+    const date      = new Date(y, m - 1, d);
+    const heading   = `${DAYS[currentLang][date.getDay()]} ${d} ${MONTHS[currentLang][m - 1]} ${y}`;
+
+    detailEl.innerHTML = '';
+
+    const h = document.createElement('p');
+    h.className   = 'day-detail-heading';
+    h.textContent = heading;
+    detailEl.appendChild(h);
+
+    if (items.length === 0) {
+      const empty = document.createElement('p');
+      empty.className   = 'day-detail-empty';
+      empty.textContent = tr.dayDetailEmpty;
+      detailEl.appendChild(empty);
+    } else {
+      const ul = document.createElement('ul');
+      ul.className = 'item-list';
+      ul.style.display = 'block';
+
+      items.forEach(({ title, when, urgent, notes, monthKey: mk }, i) => {
+        const li = document.createElement('li');
+        if (urgent) li.classList.add('urgent');
+        li.style.animationDelay = `${i * 40}ms`;
+
+        const titleSpan = document.createElement('span');
+        titleSpan.className   = 'item-title';
+        titleSpan.textContent = title;
+        li.appendChild(titleSpan);
+
+        const timeStr = formatItemTime(when, currentLang);
+        if (timeStr) {
+          const whenSpan = document.createElement('span');
+          whenSpan.className   = 'item-when';
+          whenSpan.textContent = timeStr;
+          li.appendChild(whenSpan);
+        }
+
+        if (urgent) {
+          const tag = document.createElement('span');
+          tag.className   = 'item-urgent-tag';
+          tag.textContent = tr.urgentTag;
+          li.appendChild(tag);
+        }
+
+        if (groupConnected) {
+          const shareBtn = document.createElement('button');
+          shareBtn.className   = 'item-share';
+          shareBtn.textContent = tr.shareBtn;
+          shareBtn.style.opacity = '1';
+          shareBtn.addEventListener('click', () => shareToGroup({ title, when, notes }, shareBtn));
+          li.appendChild(shareBtn);
+        }
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'item-delete';
+        deleteBtn.setAttribute('aria-label', 'Remove item');
+        deleteBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1.5 3h10M4.5 3V1.5h4V3M3 3l.6 8h5.8L10 3"/></svg>`;
+        deleteBtn.addEventListener('click', () => { deleteItem(mk, title); selectedDay = null; renderAll(); });
+        li.appendChild(deleteBtn);
+
+        if (notes) {
+          const noteEl = document.createElement('span');
+          noteEl.className   = 'item-note';
+          noteEl.textContent = notes;
+          li.appendChild(noteEl);
+        }
+
+        ul.appendChild(li);
+      });
+
+      detailEl.appendChild(ul);
+    }
+
+    if (!groupConnected) {
+      const note = document.createElement('p');
+      note.className = 'day-detail-no-group';
+      note.innerHTML = tr.dayDetailNoGroup('/');
+      detailEl.appendChild(note);
+    }
+
+    detailEl.style.display = 'block';
+  }
+
+  function renderAll() {
+    renderDayPanels();
+    renderCalendar(activeMonth);
+    renderDayDetail(selectedDay);
+  }
+
+  document.getElementById('prevMonth').addEventListener('click', () => {
+    activeMonth = stepMonth(activeMonth, -1);
+    renderCalendar(activeMonth);
+  });
+
+  document.getElementById('nextMonth').addEventListener('click', () => {
+    activeMonth = stepMonth(activeMonth, 1);
+    renderCalendar(activeMonth);
+  });
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem(LANG_KEY, lang);
+
+    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+    document.getElementById('langSv').classList.toggle('active', lang === 'sv');
+
+    const tr = T[lang];
+    document.getElementById('eyebrow').textContent      = tr.eyebrow;
+    textarea.placeholder                                = tr.placeholder;
+    processBtn.textContent                              = tr.process;
+    micLabel.textContent                                = recording ? tr.stop : tr.record;
+    document.getElementById('mastheadDate').textContent = formatDate(lang);
+    document.getElementById('familyLink').textContent   = tr.groupSchedule;
+
+    if (recognition) recognition.lang = tr.voiceLang;
+
+    renderWeekdayHeaders(lang);
+    renderAll();
+  }
+
+  document.getElementById('mastheadDate').textContent = formatDate(currentLang);
+
+  function parseMarkdown(md) {
+    const result = {};
+    let cur = null;
+    for (const line of md.split('\n')) {
+      if (line.startsWith('## ')) {
+        cur = line.slice(3).trim();
+        result[cur] = result[cur] || [];
+      } else if (line.startsWith('- ') && cur) {
+        let raw = line.slice(2).trim();
+        const urgent = raw.endsWith('[urgent]');
+        if (urgent) raw = raw.slice(0, -8).trim();
+        const whenMatch = raw.match(/\[([^\]]+)\]$/);
+        const when  = whenMatch ? whenMatch[1] : null;
+        const title = whenMatch ? raw.slice(0, whenMatch.index).trim() : raw;
+        result[cur].push({ title, when, urgent, notes: null });
+      } else if (line.startsWith('  ↳ ') && cur) {
+        const g = result[cur];
+        if (g.length > 0) g[g.length - 1].notes = line.slice(4).trim();
+      }
+    }
+    return result;
+  }
+
+  function saveToStorage(grouped) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(grouped));
+  }
+
+  function loadFromStorage() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return {};
+      const raw   = JSON.parse(saved);
+      const clean = {};
+      for (const [k, v] of Object.entries(raw)) {
+        if (/^\d{4}-\d{2}$/.test(k)) clean[k] = v;
+      }
+      return clean;
+    } catch { return {}; }
+  }
+
+  function deleteItem(monthKey, title) {
+    const current = loadFromStorage();
+    if (current[monthKey]) {
+      current[monthKey] = current[monthKey].filter(i => i.title !== title);
+      if (current[monthKey].length === 0) delete current[monthKey];
+    }
+    saveToStorage(current);
+    renderAll();
+  }
+
+  function mergeGrouped(existing, incoming) {
+    const merged = JSON.parse(JSON.stringify(existing));
+    for (const [group, items] of Object.entries(incoming)) {
+      if (!merged[group]) {
+        merged[group] = items;
+      } else {
+        const seen = new Set(merged[group].map(i => i.title.toLowerCase()));
+        for (const item of items) {
+          if (!seen.has(item.title.toLowerCase())) {
+            merged[group].push(item);
+            seen.add(item.title.toLowerCase());
+          }
+        }
+      }
+    }
+    return merged;
+  }
+
+  function setLoading(msg) {
+    statusEl.innerHTML    = `<div class="spinner"></div><span>${msg}</span>`;
+    errorEl.style.display = 'none';
+    processBtn.disabled   = true;
+    micBtn.disabled       = true;
+  }
+
+  function clearLoading() {
+    statusEl.innerHTML  = '';
+    processBtn.disabled = false;
+    micBtn.disabled     = false;
+  }
+
+  function showError(msg) {
+    clearLoading();
+    errorEl.textContent   = `↳ ${msg}`;
+    errorEl.style.display = 'block';
+  }
+
+  function showResult(markdown) {
+    clearLoading();
+    errorEl.style.display = 'none';
+    const incoming  = parseMarkdown(markdown);
+    const merged    = mergeGrouped(loadFromStorage(), incoming);
+    saveToStorage(merged);
+    const newMonths = Object.keys(incoming).filter(k => /^\d{4}-\d{2}$/.test(k)).sort();
+    if (newMonths.length > 0) activeMonth = newMonths[0];
+    renderAll();
+  }
+
+  processBtn.addEventListener('click', async () => {
+    const text = textarea.value.trim();
+    if (!text) { showError(t().nothing); return; }
+    setLoading(t().processing);
+    try {
+      const res  = await fetch('/api/process', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ text, lang: currentLang }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `Server error ${res.status}`);
+      showResult(data.result);
+    } catch (err) {
+      showError(err.message);
+    }
+  });
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+
+  if (!SpeechRecognition) {
+    micBtn.disabled = true;
+    micBtn.title    = 'Voice input requires Chrome or Edge.';
+  } else {
+    recognition                = new SpeechRecognition();
+    recognition.continuous     = true;
+    recognition.interimResults = true;
+    recognition.lang           = T[currentLang].voiceLang;
+
+    let finalTranscript = '';
+
+    recognition.addEventListener('result', (e) => {
+      let interim = '';
+      finalTranscript = '';
+      for (const result of e.results) {
+        if (result.isFinal) finalTranscript += result[0].transcript + ' ';
+        else interim += result[0].transcript;
+      }
+      textarea.value = (finalTranscript + interim).trim();
+    });
+
+    recognition.addEventListener('end', async () => {
+      if (!recording) return;
+      recording = false;
+      micBtn.classList.remove('recording');
+      micLabel.textContent = t().record;
+
+      const text = finalTranscript.trim();
+      if (!text) { clearLoading(); showError(t().notHeard); return; }
+
+      textarea.value = text;
+      setLoading(t().processing);
+      try {
+        const res  = await fetch('/api/process', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ text, lang: currentLang }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `Server error ${res.status}`);
+        showResult(data.result);
+      } catch (err) {
+        showError(err.message);
+      }
+    });
+
+    recognition.addEventListener('error', (e) => {
+      recording = false;
+      micBtn.classList.remove('recording');
+      micLabel.textContent = t().record;
+      clearLoading();
+      showError(e.error === 'not-allowed' ? t().micDenied : `${t().voiceErr}${e.error}`);
+    });
+
+    micBtn.addEventListener('click', () => {
+      if (recording) { recognition.stop(); return; }
+      finalTranscript      = '';
+      textarea.value       = '';
+      recording            = true;
+      micBtn.classList.add('recording');
+      micLabel.textContent = t().stop;
+      statusEl.innerHTML   = `<div class="spinner"></div><span>${t().listening}</span>`;
+      errorEl.style.display = 'none';
+      recognition.start();
+    });
+  }
+
+  document.getElementById('langEn').addEventListener('click', () => applyLang('en'));
+  document.getElementById('langSv').addEventListener('click', () => applyLang('sv'));
+
+  applyLang(currentLang);
+</script>
+</body>
+</html>

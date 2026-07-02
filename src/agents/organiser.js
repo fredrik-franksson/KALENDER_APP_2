@@ -3,11 +3,13 @@ import Anthropic from '@anthropic-ai/sdk';
 const client = new Anthropic();
 
 export async function organiseItems(items) {
+  const todayISO     = new Date().toISOString().slice(0, 10);
+  const currentMonth = todayISO.slice(0, 7);
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 1000,
     system:
-      'You receive a JSON array of items each with a "when" field. Assign each item to exactly one of these four groups: "Today", "This Week", "Next Week", "Upcoming". Use the "when" field to decide. "Upcoming" is for anything beyond next week or with no clear timeframe. Merge any items that mean the same thing, even if worded differently, combining their notes. Add a \'group\' field to each item. Return ONLY a valid JSON array with all original fields plus group. No markdown, no explanation.',
+      `Today is ${todayISO}. Current month is ${currentMonth}. You receive a JSON array of items each with a "when" field (ISO date YYYY-MM-DD or YYYY-MM-DDTHH:MM, or null). Assign each item to a calendar month by adding a "group" field in "YYYY-MM" format derived from the item's "when" date. Items with null "when" go to the current month (${currentMonth}). Merge any items that mean the same thing, even if worded differently, combining their notes. Return ONLY a valid JSON array with all original fields plus group. No markdown, no explanation.`,
     messages: [{ role: 'user', content: JSON.stringify(items) }],
   });
 

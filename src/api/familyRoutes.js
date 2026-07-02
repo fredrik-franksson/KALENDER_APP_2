@@ -3,17 +3,31 @@ import { readFile, writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const router = express.Router();
+const router   = express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DATA_FILE  = path.join(__dirname, '../../data/family.json');
-const FAMILY_CODE = process.env.FAMILY_CODE || 'family2026';
+const LEGACY_CODE = process.env.FAMILY_CODE || 'family2026';
+
+// Unambiguous alphanumeric chars for codes
+const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function genCode() {
+  return Array.from({ length: 6 }, () => CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]).join('');
+}
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
 
 async function readData() {
   try {
-    const raw = await readFile(DATA_FILE, 'utf8');
-    return JSON.parse(raw);
+    const raw    = await readFile(DATA_FILE, 'utf8');
+    const parsed = JSON.parse(raw);
+    // Migrate old single-group format { events: [] } → { groups: { [code]: { name, events } } }
+    if (parsed.events && !parsed.groups) {
+      return { groups: { [LEGACY_CODE]: { name: 'Family', events: parsed.events } } };
+    }
+    return parsed;
   } catch {
-    return { events: [] };
+    return { groups: {} };
   }
 }
 
@@ -22,46 +36,70 @@ async function writeData(data) {
   await writeFile(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
 }
 
-function genId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+function getGroup(req, res, data) {
+  const code  = (req.headers['x-family-code'] || '').toUpperCase();
+  const group = data.groups[code];
+  if (!group) { res.status(401).json({ error: 'Invalid group code.' }); return null; }
+  return group;
 }
 
-function auth(req, res, next) {
-  const code = req.headers['x-family-code'];
-  if (code !== FAMILY_CODE) return res.status(401).json({ error: 'Invalid family code.' });
-  next();
-}
-
-// Verify code + name
-router.post('/join', (req, res) => {
-  const { code, name } = req.body;
-  if (!code || !name?.trim()) {
-    return res.status(400).json({ error: 'Family code and name are required.' });
+// Create a new group
+router.post('/create', async (req, res) => {
+  const { groupName, name } = req.body;
+  if (!groupName?.trim() || !name?.trim()) {
+    return res.status(400).json({ error: 'Group name and your name are required.' });
   }
-  if (code !== FAMILY_CODE) {
-    return res.status(401).json({ error: 'Wrong family code.' });
-  }
-  res.json({ ok: true, name: name.trim() });
-});
-
-// Get all events
-router.get('/events', auth, async (req, res) => {
   try {
     const data = await readData();
-    res.json({ events: data.events });
+    let code;
+    do { code = genCode(); } while (data.groups[code]);
+    data.groups[code] = { name: groupName.trim(), events: [] };
+    await writeData(data);
+    res.json({ ok: true, code, groupName: groupName.trim() });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Verify code + name
+router.post('/join', async (req, res) => {
+  const { code, name } = req.body;
+  if (!code || !name?.trim()) {
+    return res.status(400).json({ error: 'Group code and name are required.' });
+  }
+  try {
+    const data  = await readData();
+    const group = data.groups[code.toUpperCase()];
+    if (!group) return res.status(401).json({ error: 'Wrong group code.' });
+    res.json({ ok: true, groupName: group.name });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get events
+router.get('/events', async (req, res) => {
+  try {
+    const data  = await readData();
+    const group = getGroup(req, res, data);
+    if (!group) return;
+    res.json({ events: group.events });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 // Add event
-router.post('/events', auth, async (req, res) => {
+router.post('/events', async (req, res) => {
   try {
     const { title, date, notes, createdBy } = req.body;
     if (!title?.trim() || !createdBy?.trim()) {
       return res.status(400).json({ error: 'Title and name are required.' });
     }
-    const data = await readData();
+    const data  = await readData();
+    const group = getGroup(req, res, data);
+    if (!group) return;
+
     const event = {
       id:        genId(),
       title:     title.trim(),
@@ -71,8 +109,8 @@ router.post('/events', auth, async (req, res) => {
       createdAt: new Date().toISOString(),
       reactions: {},
     };
-    data.events.push(event);
-    data.events.sort((a, b) => {
+    group.events.push(event);
+    group.events.sort((a, b) => {
       if (!a.date && !b.date) return 0;
       if (!a.date) return 1;
       if (!b.date) return -1;
@@ -85,20 +123,20 @@ router.post('/events', auth, async (req, res) => {
   }
 });
 
-// React to event: reaction = 'up' | 'down' | null (to remove)
-router.post('/events/:id/react', auth, async (req, res) => {
+// React to event
+router.post('/events/:id/react', async (req, res) => {
   try {
     const { name, reaction } = req.body;
     if (!name?.trim()) return res.status(400).json({ error: 'Name required.' });
     const data  = await readData();
-    const event = data.events.find(e => e.id === req.params.id);
+    const group = getGroup(req, res, data);
+    if (!group) return;
+
+    const event = group.events.find(e => e.id === req.params.id);
     if (!event) return res.status(404).json({ error: 'Event not found.' });
 
-    if (!reaction) {
-      delete event.reactions[name.trim()];
-    } else {
-      event.reactions[name.trim()] = reaction;
-    }
+    if (!reaction) { delete event.reactions[name.trim()]; }
+    else           { event.reactions[name.trim()] = reaction; }
     await writeData(data);
     res.json({ event });
   } catch (err) {
@@ -107,12 +145,15 @@ router.post('/events/:id/react', auth, async (req, res) => {
 });
 
 // Delete event
-router.delete('/events/:id', auth, async (req, res) => {
+router.delete('/events/:id', async (req, res) => {
   try {
-    const data = await readData();
-    const idx  = data.events.findIndex(e => e.id === req.params.id);
+    const data  = await readData();
+    const group = getGroup(req, res, data);
+    if (!group) return;
+
+    const idx = group.events.findIndex(e => e.id === req.params.id);
     if (idx === -1) return res.status(404).json({ error: 'Event not found.' });
-    data.events.splice(idx, 1);
+    group.events.splice(idx, 1);
     await writeData(data);
     res.json({ ok: true });
   } catch (err) {

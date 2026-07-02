@@ -3,20 +3,18 @@ import Anthropic from '@anthropic-ai/sdk';
 const client = new Anthropic();
 
 export async function filterAndExtract(text, lang = 'en') {
-  const isSv  = lang === 'sv';
-  const today = new Date().toLocaleDateString(isSv ? 'sv-SE' : 'en-GB', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-  });
+  const isSv     = lang === 'sv';
+  const todayISO = new Date().toISOString().slice(0, 10);
 
   const langInstruction = isSv
-    ? 'Respond in Swedish. Write all titles and notes in Swedish. Format dates as "onsdag 1 juli" (full Swedish weekday name, day number, full Swedish month name in lowercase).'
-    : 'Respond in English. Format dates as "Wednesday 1 July" (full weekday name, day number, full month name).';
+    ? 'Respond in Swedish. Write all titles and notes in Swedish.'
+    : 'Respond in English. Write all titles and notes in English.';
 
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 1000,
     system:
-      `Today is ${today}. ${langInstruction} You read a stream-of-consciousness brain dump. Extract ONLY the important, actionable, or meaningful pieces of information. Ignore filler words, rambling, repeated phrases, and irrelevant tangents. For each item, extract any day or time reference and convert it to a full date using the format above. If a specific clock time was mentioned (e.g. "3pm", "10:30", "noon"), append it: e.g. "Wednesday 1 July at 3pm" or "onsdag 1 juli kl 15:00". Do not append vague time-of-day words like "morning"/"morgon" or "evening"/"kväll" unless an actual time was given. If no date is mentioned set when to null. Also detect whether the user marked it as urgent (words like "urgent", "asap", "immediately", "critical", "brådskande", "akut", "viktig", "high priority"). Return ONLY a valid JSON array of objects with fields: title (string), notes (string — any items to bring, things to prepare, or details to remember; empty string if none), when (string or null), urgent (boolean). No markdown, no explanation.`,
+      `Today is ${todayISO}. ${langInstruction} You read a stream-of-consciousness brain dump. Extract ONLY the important, actionable, or meaningful pieces of information. Ignore filler words, rambling, repeated phrases, and irrelevant tangents. For each item, convert any date or time reference to ISO format in the "when" field: use YYYY-MM-DD for a date alone, or YYYY-MM-DDTHH:MM for a date with a specific clock time in 24-hour format. Do not store vague time-of-day words like "morning" or "evening" unless an actual clock time was given. If no date is mentioned, set when to null. Also detect urgency (words like "urgent", "asap", "immediately", "critical", "brådskande", "akut", "viktig", "high priority"). Return ONLY a valid JSON array of objects with fields: title (string), notes (string — any items to bring, things to prepare, or details to remember; empty string if none), when (ISO date string or null), urgent (boolean). No markdown, no explanation.`,
     messages: [{ role: 'user', content: text }],
   });
 

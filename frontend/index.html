@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BrainDump</title>
+  <title id="pageTitle">BrainDump — Group Schedule</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono&display=swap" rel="stylesheet" />
@@ -31,16 +31,12 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Wrap ── */
     .wrap {
       max-width: 1040px;
       margin: 0 auto;
       padding: 0 48px;
     }
-
-    @media (max-width: 600px) {
-      .wrap { padding: 0 20px; }
-    }
+    @media (max-width: 600px) { .wrap { padding: 0 20px; } }
 
     /* ── Masthead ── */
     .masthead {
@@ -51,7 +47,11 @@
       gap: 24px;
       border-bottom: 1px solid var(--ink);
     }
-
+    .masthead-left {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
     .masthead-wordmark {
       font-family: 'DM Sans', sans-serif;
       font-size: 0.72rem;
@@ -59,33 +59,33 @@
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--ink);
+      text-decoration: none;
     }
-
-    .masthead-family {
+    .masthead-sep {
       font-family: 'Space Mono', monospace;
       font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      color: var(--ink-2);
-      text-decoration: none;
-      transition: color 0.15s;
-      margin-left: 16px;
+      color: var(--rule);
     }
-    .masthead-family:hover { color: var(--ink); }
-
+    .masthead-section {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .masthead-right {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+    }
     .masthead-date {
       font-family: 'Space Mono', monospace;
       font-size: 0.85rem;
       color: var(--ink-2);
-      text-align: right;
     }
 
     /* ── Language toggle ── */
-    .lang-toggle {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
+    .lang-toggle { display: flex; align-items: center; gap: 7px; }
     .lang-btn {
       background: none;
       border: none;
@@ -97,10 +97,8 @@
       padding: 0;
       transition: color 0.15s;
     }
-
     .lang-btn.active { color: var(--ink); }
     .lang-btn:hover  { color: var(--ink); }
-
     .lang-sep {
       font-family: 'Space Mono', monospace;
       font-size: 0.72rem;
@@ -108,55 +106,82 @@
       user-select: none;
     }
 
-    /* ── Input section ── */
-    .input-section {
-      padding: 52px 0 44px;
-      border-bottom: 1px solid var(--rule);
+    /* ── Connect section ── */
+    .connect-wrap {
+      max-width: 440px;
+      margin: 80px auto 0;
     }
 
-    .eyebrow {
+    /* ── Mode tabs ── */
+    .mode-tabs {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+    .mode-tab {
+      background: none;
+      border: none;
       font-family: 'Space Mono', monospace;
-      font-size: 0.63rem;
-      letter-spacing: 0.12em;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--ink-2);
-      margin-bottom: 22px;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.15s;
+    }
+    .mode-tab.active { color: var(--ink); }
+    .mode-tab:hover  { color: var(--ink); }
+    .mode-sep {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--rule);
+      user-select: none;
     }
 
-    textarea {
-      width: 100%;
+    /* ── Headings ── */
+    .connect-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(2.4rem, 4vw, 3.2rem);
+      line-height: 1.1;
+      margin-bottom: 44px;
+    }
+
+    /* ── Fields ── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 28px;
+    }
+    .field-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    .field-input {
       background: transparent;
       border: none;
       border-bottom: 1px solid var(--rule);
       font-family: 'DM Sans', sans-serif;
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 300;
-      line-height: 1.65;
       color: var(--ink);
-      padding: 0 0 18px;
-      resize: none;
+      padding: 10px 0;
       outline: none;
-      min-height: 100px;
+      width: 100%;
       transition: border-color 0.2s;
     }
+    .field-input:focus { border-bottom-color: var(--ink); }
+    .field-input::placeholder { color: var(--ink-2); font-style: italic; }
 
-    textarea::placeholder {
-      color: var(--ink-2);
-      font-style: italic;
-    }
-
-    textarea:focus {
-      border-bottom-color: var(--ink);
-    }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 22px;
-    }
-
-    .btn-process {
+    /* ── Buttons ── */
+    .connect-btn {
       background: var(--ink);
       color: var(--paper);
       border: none;
@@ -165,81 +190,17 @@
       font-weight: 500;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      padding: 11px 28px;
+      padding: 13px 36px;
       cursor: pointer;
       transition: background 0.2s;
+      width: 100%;
+      margin-top: 8px;
     }
+    .connect-btn:hover:not(:disabled) { background: var(--green); }
+    .connect-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-    .btn-process:hover:not(:disabled) { background: var(--green); }
-    .btn-process:disabled { opacity: 0.35; cursor: not-allowed; }
-
-    .btn-mic {
-      background: transparent;
-      border: 1px solid var(--rule);
-      color: var(--ink);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 400;
-      letter-spacing: 0.06em;
-      padding: 10px 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: border-color 0.15s;
-    }
-
-    .btn-mic:hover:not(:disabled) { border-color: var(--ink); }
-    .btn-mic:disabled { opacity: 0.35; cursor: not-allowed; }
-
-    .btn-mic.recording {
-      border-color: var(--red);
-      color: var(--red);
-    }
-
-    .mic-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      border: 1px solid currentColor;
-      transition: background 0.15s;
-      flex-shrink: 0;
-    }
-
-    .btn-mic.recording .mic-dot {
-      background: var(--red);
-      animation: blink 1s ease-in-out infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.3; }
-    }
-
-    .status-line {
-      margin-top: 18px;
-      font-size: 0.8rem;
-      color: var(--ink-2);
-      font-style: italic;
-      min-height: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .spinner {
-      width: 12px;
-      height: 12px;
-      border: 1.5px solid var(--rule);
-      border-top-color: var(--ink);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .error-line {
+    /* ── Error line ── */
+    .connect-error {
       margin-top: 14px;
       font-family: 'Space Mono', monospace;
       font-size: 0.7rem;
@@ -247,141 +208,85 @@
       display: none;
     }
 
-    /* ── Sections ── */
-    .sections {
-      padding-bottom: 100px;
-    }
-
-    .section {
-      display: grid;
-      grid-template-columns: 230px 1fr;
-      column-gap: 56px;
-      padding: 44px 0;
-      border-bottom: 1px solid var(--rule);
-      align-items: start;
-    }
-
-    @media (max-width: 680px) {
-      .section {
-        grid-template-columns: 1fr;
-        row-gap: 18px;
-        padding: 32px 0;
-      }
-    }
-
-    .section-label { padding-top: 2px; }
-
-    .section-name {
-      display: block;
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(2.8rem, 3.8vw, 3.8rem);
-      line-height: 1.05;
-      letter-spacing: -0.01em;
-      color: var(--ink);
-    }
-
-    .section-count {
-      display: none;
+    /* ── Success state ── */
+    .success-eyebrow {
       font-family: 'Space Mono', monospace;
-      font-size: 0.62rem;
+      font-size: 0.63rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+    .success-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.63rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       color: var(--ink-2);
-      margin-top: 8px;
-      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+      margin-top: 32px;
     }
-
-    /* ── Items ── */
-    .empty-state {
-      font-family: 'Space Mono', monospace;
-      font-size: 1rem;
-      color: var(--rule);
-      padding-top: 6px;
-      user-select: none;
-    }
-
-    .item-list {
-      list-style: none;
-      display: none;
-    }
-
-    .item-list li {
+    .code-box {
       display: flex;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 0 16px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--surface);
-      font-size: 0.95rem;
-      font-weight: 300;
-      line-height: 1.5;
-      animation: fadeUp 0.25s ease both;
+      align-items: stretch;
+      gap: 0;
+      margin-bottom: 16px;
     }
-
-    .item-note {
-      flex-basis: 100%;
-      font-size: 0.78rem;
-      color: var(--ink-2);
-      font-style: italic;
-      margin-top: 4px;
-      padding-left: 1px;
-    }
-
-    .item-delete {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--rule);
-      padding: 2px 0 2px 8px;
-      flex-shrink: 0;
-      line-height: 0;
-      opacity: 0;
-      transition: opacity 0.15s, color 0.15s;
-    }
-
-    .item-list li:hover .item-delete { opacity: 1; }
-    .item-delete:hover { color: var(--red); }
-
-    .item-list li:last-child { border-bottom: none; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(5px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .item-title { flex: 1; }
-
-    .item-when {
+    .code-display {
+      flex: 1;
       font-family: 'Space Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 1.9rem;
+      letter-spacing: 0.3em;
+      color: var(--ink);
+      text-align: center;
+      padding: 18px 20px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-right: none;
+      user-select: all;
+    }
+    .btn-copy {
+      background: none;
+      border: 1px solid var(--rule);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
       color: var(--ink-2);
+      padding: 0 16px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
       white-space: nowrap;
       flex-shrink: 0;
-      padding-top: 2px;
+    }
+    .btn-copy:hover  { border-color: var(--ink); color: var(--ink); }
+    .btn-copy.copied { color: var(--green); border-color: var(--green); background: rgba(27,61,44,0.06); }
+
+    .success-note {
+      font-size: 0.82rem;
+      color: var(--ink-2);
+      line-height: 1.55;
+      margin-bottom: 32px;
     }
 
-    /* Urgent */
-    .item-list li.urgent {
-      padding-left: 14px;
-      border-left: 2px solid var(--red);
-    }
-
-    .item-list li.urgent .item-title { color: var(--red); }
-
-    .item-urgent-tag {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.58rem;
-      color: var(--red);
+    .btn-goto {
+      background: none;
+      border: 1px solid var(--ink);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      flex-shrink: 0;
+      padding: 13px 36px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      width: 100%;
     }
+    .btn-goto:hover { background: var(--ink); color: var(--paper); }
 
-    @media (prefers-reduced-motion: reduce) {
-      .item-list li { animation: none; }
-      .spinner      { animation: none; }
-      .mic-dot      { animation: none; }
-    }
+    .panel { display: none; }
+    .panel.active { display: block; }
   </style>
 </head>
 <body>
@@ -389,79 +294,79 @@
 <header>
   <div class="wrap">
     <div class="masthead">
-      <span class="masthead-wordmark">BrainDump</span>
-        <a href="/family.html" class="masthead-family" id="familyLink">Group Schedule</a>
-      <div class="lang-toggle">
-        <button class="lang-btn active" id="langEn">EN</button>
-        <span class="lang-sep">·</span>
-        <button class="lang-btn" id="langSv">SV</button>
+      <div class="masthead-left">
+        <a href="/braindump.html" class="masthead-wordmark">BrainDump</a>
+        <span class="masthead-sep">/</span>
+        <span class="masthead-section" id="mastheadSection">Group Schedule</span>
       </div>
-      <span class="masthead-date" id="mastheadDate"></span>
+      <div class="masthead-right">
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="langEn">EN</button>
+          <span class="lang-sep">·</span>
+          <button class="lang-btn" id="langSv">SV</button>
+        </div>
+        <span class="masthead-date" id="mastheadDate"></span>
+      </div>
     </div>
   </div>
 </header>
 
 <main>
   <div class="wrap">
+    <div class="connect-wrap">
 
-    <section class="input-section">
-      <p class="eyebrow" id="eyebrow">New entry</p>
-      <textarea id="inputText" placeholder="What's on your mind…" rows="4"></textarea>
-      <div class="controls">
-        <button class="btn-process" id="processBtn">Process</button>
-        <button class="btn-mic" id="micBtn">
-          <span class="mic-dot"></span>
-          <span id="micLabel">Record</span>
-        </button>
-      </div>
-      <div class="status-line" id="status"></div>
-      <div class="error-line" id="error"></div>
-    </section>
-
-    <div class="sections">
-
-      <div class="section" data-group="Today">
-        <div class="section-label">
-          <span class="section-name" id="section-name-Today">Today</span>
-          <span class="section-count" id="count-Today"></span>
-        </div>
-        <div>
-          <p class="empty-state" id="empty-Today">—</p>
-          <ul class="item-list" id="list-Today"></ul>
-        </div>
+      <!-- Mode tabs -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tabJoin">Join</button>
+        <span class="mode-sep">·</span>
+        <button class="mode-tab" id="tabCreate">Create</button>
       </div>
 
-      <div class="section" data-group="This Week">
-        <div class="section-label">
-          <span class="section-name" id="section-name-This Week">This Week</span>
-          <span class="section-count" id="count-This Week"></span>
+      <!-- Join panel -->
+      <div class="panel active" id="joinPanel">
+        <h1 class="connect-heading" id="joinHeading">Join your group</h1>
+
+        <div class="field">
+          <label class="field-label" id="codeLabel" for="joinCode">Group code</label>
+          <input class="field-input" type="text" id="joinCode" autocomplete="off" autocapitalize="characters" />
         </div>
-        <div>
-          <p class="empty-state" id="empty-This Week">—</p>
-          <ul class="item-list" id="list-This Week"></ul>
+        <div class="field">
+          <label class="field-label" id="joinNameLabel" for="joinName">Your first name</label>
+          <input class="field-input" type="text" id="joinName" autocomplete="given-name" />
         </div>
+        <button class="connect-btn" id="joinBtn">Join</button>
+        <p class="connect-error" id="joinError"></p>
       </div>
 
-      <div class="section" data-group="Next Week">
-        <div class="section-label">
-          <span class="section-name" id="section-name-Next Week">Next Week</span>
-          <span class="section-count" id="count-Next Week"></span>
+      <!-- Create panel -->
+      <div class="panel" id="createPanel">
+        <h1 class="connect-heading" id="createHeading">Create a group</h1>
+
+        <div class="field">
+          <label class="field-label" id="groupNameLabel" for="groupName">Group name</label>
+          <input class="field-input" type="text" id="groupName" />
         </div>
-        <div>
-          <p class="empty-state" id="empty-Next Week">—</p>
-          <ul class="item-list" id="list-Next Week"></ul>
+        <div class="field">
+          <label class="field-label" id="createNameLabel" for="createName">Your first name</label>
+          <input class="field-input" type="text" id="createName" autocomplete="given-name" />
         </div>
+        <button class="connect-btn" id="createBtn">Create</button>
+        <p class="connect-error" id="createError"></p>
       </div>
 
-      <div class="section" data-group="Upcoming">
-        <div class="section-label">
-          <span class="section-name" id="section-name-Upcoming">Upcoming</span>
-          <span class="section-count" id="count-Upcoming"></span>
+      <!-- Success panel (after create) -->
+      <div class="panel" id="successPanel">
+        <p class="success-eyebrow" id="successEyebrow">Group created</p>
+        <h1 class="connect-heading" id="successHeading">Share your code</h1>
+
+        <p class="success-label" id="yourCodeLabel">Group code</p>
+        <div class="code-box">
+          <span class="code-display" id="createdCode"></span>
+          <button class="btn-copy" id="copyBtn">Copy</button>
         </div>
-        <div>
-          <p class="empty-state" id="empty-Upcoming">—</p>
-          <ul class="item-list" id="list-Upcoming"></ul>
-        </div>
+        <p class="success-note" id="successNote">Share this code with everyone in your group so they can join.</p>
+
+        <button class="btn-goto" id="gotoBtn">→ Go to calendar</button>
       </div>
 
     </div>
@@ -469,64 +374,71 @@
 </main>
 
 <script>
-  // ── Translations ───────────────────────────────────────────────────────
+  // ── Translations ──────────────────────────────────────────────────────
   const T = {
     en: {
-      dateLocale:  'en-GB',
-      voiceLang:   'en-US',
-      eyebrow:     'New entry',
-      placeholder: "What's on your mind…",
-      process:     'Process',
-      record:      'Record',
-      stop:        'Stop',
-      processing:  'Processing…',
-      listening:   'Listening…',
-      nothing:     'Nothing to process — write something first.',
-      notHeard:    'Nothing was heard — please try again.',
-      micDenied:   'Microphone access denied.',
-      voiceErr:    'Voice error: ',
-      sections:      { Today: 'Today', 'This Week': 'This Week', 'Next Week': 'Next Week', Upcoming: 'Upcoming' },
-      urgentTag:     'urgent',
-      itemCount:     (n) => `${n} item${n !== 1 ? 's' : ''}`,
-      groupSchedule: 'Group Schedule',
+      pageTitle:          'BrainDump — Group Schedule',
+      sectionName:        'Group Schedule',
+      tabJoin:            'Join',
+      tabCreate:          'Create',
+      joinHeading:        'Join your group',
+      createHeading:      'Create a group',
+      successEyebrow:     'Group created',
+      successHeading:     'Share your code',
+      codeLabel:          'Group code',
+      codePlaceholder:    'e.g. ABC123',
+      joinNameLabel:      'Your first name',
+      namePlaceholder:    'Your name…',
+      groupNameLabel:     'Group name',
+      groupPlaceholder:   'Smith Family, Book Club…',
+      createNameLabel:    'Your first name',
+      joinBtn:            'Join',
+      joining:            'Joining…',
+      createBtn:          'Create',
+      creating:           'Creating…',
+      copy:               'Copy',
+      copied:             'Copied',
+      gotoBtn:            '→ Go to calendar',
+      yourCodeLabel:      'Group code',
+      successNote:        'Share this code with everyone who should join the group.',
+      joinRequired:       'Please enter the group code and your name.',
+      createRequired:     'Please enter a group name and your name.',
+      wrongCode:          'Wrong group code.',
+      connectErr:         'Could not connect — please try again.',
     },
     sv: {
-      dateLocale:  'sv-SE',
-      voiceLang:   'sv-SE',
-      eyebrow:     'Ny anteckning',
-      placeholder: 'Vad har du på hjärtat…',
-      process:     'Bearbeta',
-      record:      'Spela in',
-      stop:        'Stopp',
-      processing:  'Bearbetar…',
-      listening:   'Lyssnar…',
-      nothing:     'Inget att bearbeta — skriv något först.',
-      notHeard:    'Inget hördes — försök igen.',
-      micDenied:   'Mikrofonåtkomst nekad.',
-      voiceErr:    'Röstfel: ',
-      sections:      { Today: 'Idag', 'This Week': 'Den här veckan', 'Next Week': 'Nästa vecka', Upcoming: 'Kommande' },
-      urgentTag:     'brådskande',
-      itemCount:     (n) => `${n} uppgift${n !== 1 ? 'er' : ''}`,
-      groupSchedule: 'Gruppschemat',
+      pageTitle:          'BrainDump — Gruppschemat',
+      sectionName:        'Gruppschemat',
+      tabJoin:            'Gå med',
+      tabCreate:          'Skapa',
+      joinHeading:        'Gå med i gruppen',
+      createHeading:      'Skapa en grupp',
+      successEyebrow:     'Grupp skapad',
+      successHeading:     'Dela din kod',
+      codeLabel:          'Gruppkod',
+      codePlaceholder:    't.ex. ABC123',
+      joinNameLabel:      'Ditt förnamn',
+      namePlaceholder:    'Ditt namn…',
+      groupNameLabel:     'Gruppnamn',
+      groupPlaceholder:   'Familjen, Bokklubben…',
+      createNameLabel:    'Ditt förnamn',
+      joinBtn:            'Gå med',
+      joining:            'Ansluter…',
+      createBtn:          'Skapa',
+      creating:           'Skapar…',
+      copy:               'Kopiera',
+      copied:             'Kopierat',
+      gotoBtn:            '→ Gå till kalender',
+      yourCodeLabel:      'Gruppkod',
+      successNote:        'Dela denna kod med alla som ska ansluta till gruppen.',
+      joinRequired:       'Ange gruppkoden och ditt namn.',
+      createRequired:     'Ange ett gruppnamn och ditt namn.',
+      wrongCode:          'Fel gruppkod.',
+      connectErr:         'Kunde inte ansluta — försök igen.',
     },
   };
 
-  const LANG_KEY   = 'braindump_lang';
-  let currentLang  = localStorage.getItem(LANG_KEY) || 'en';
-  const t          = () => T[currentLang];
-
-  const textarea   = document.getElementById('inputText');
-  const micBtn     = document.getElementById('micBtn');
-  const micLabel   = document.getElementById('micLabel');
-  const processBtn = document.getElementById('processBtn');
-  const statusEl   = document.getElementById('status');
-  const errorEl    = document.getElementById('error');
-
-  const GROUPS      = ['Today', 'This Week', 'Next Week', 'Upcoming'];
-  const STORAGE_KEY = 'braindump_items';
-  let   recording   = false;
-
-  // ── Date formatter (manual, bypasses browser locale bugs) ─────────────
+  const LANG_KEY = 'braindump_lang';
   const DAYS = {
     en: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
     sv: ['söndag','måndag','tisdag','onsdag','torsdag','fredag','lördag'],
@@ -535,16 +447,25 @@
     en: ['January','February','March','April','May','June','July','August','September','October','November','December'],
     sv: ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'],
   };
+
+  let currentLang = localStorage.getItem(LANG_KEY) || 'en';
+  const t = () => T[currentLang];
+
   function formatDate(lang) {
     const d = new Date();
-    const day   = DAYS[lang][d.getDay()];
-    const date  = d.getDate();
-    const month = MONTHS[lang][d.getMonth()];
-    const year  = d.getFullYear();
-    return `${day} ${date} ${month} ${year}`;
+    return `${DAYS[lang][d.getDay()]} ${d.getDate()} ${MONTHS[lang][d.getMonth()]} ${d.getFullYear()}`;
   }
 
-  // ── Apply language to DOM ─────────────────────────────────────────────
+  // ── Redirect if already connected ────────────────────────────────────
+  const CODE_KEY       = 'family_code';
+  const NAME_KEY       = 'family_name';
+  const GROUP_NAME_KEY = 'family_group_name';
+
+  if (localStorage.getItem(CODE_KEY) && localStorage.getItem(NAME_KEY)) {
+    window.location.replace('/family.html');
+  }
+
+  // ── Apply language ────────────────────────────────────────────────────
   function applyLang(lang) {
     currentLang = lang;
     localStorage.setItem(LANG_KEY, lang);
@@ -553,283 +474,156 @@
     document.getElementById('langSv').classList.toggle('active', lang === 'sv');
 
     const tr = T[lang];
-    document.getElementById('eyebrow').textContent      = tr.eyebrow;
-    textarea.placeholder                                = tr.placeholder;
-    processBtn.textContent                              = tr.process;
-    micLabel.textContent                                = recording ? tr.stop : tr.record;
-    document.getElementById('mastheadDate').textContent = formatDate(lang);
-    document.getElementById('familyLink').textContent  = tr.groupSchedule;
-
-    for (const group of GROUPS) {
-      document.getElementById(`section-name-${group}`).textContent = tr.sections[group];
-    }
-
-    if (recognition) recognition.lang = tr.voiceLang;
-
-    populateSections(loadFromStorage());
+    document.title                                              = tr.pageTitle;
+    document.getElementById('mastheadSection').textContent     = tr.sectionName;
+    document.getElementById('mastheadDate').textContent        = formatDate(lang);
+    document.getElementById('tabJoin').textContent             = tr.tabJoin;
+    document.getElementById('tabCreate').textContent           = tr.tabCreate;
+    document.getElementById('joinHeading').textContent         = tr.joinHeading;
+    document.getElementById('createHeading').textContent       = tr.createHeading;
+    document.getElementById('successEyebrow').textContent      = tr.successEyebrow;
+    document.getElementById('successHeading').textContent      = tr.successHeading;
+    document.getElementById('codeLabel').textContent                = tr.codeLabel;
+    document.getElementById('joinCode').placeholder                 = tr.codePlaceholder;
+    document.getElementById('joinNameLabel').textContent            = tr.joinNameLabel;
+    document.getElementById('joinName').placeholder                 = tr.namePlaceholder;
+    document.getElementById('groupNameLabel').textContent           = tr.groupNameLabel;
+    document.getElementById('groupName').placeholder                = tr.groupPlaceholder;
+    document.getElementById('createNameLabel').textContent          = tr.createNameLabel;
+    document.getElementById('createName').placeholder               = tr.namePlaceholder;
+    document.getElementById('joinBtn').textContent                  = tr.joinBtn;
+    document.getElementById('createBtn').textContent                = tr.createBtn;
+    document.getElementById('copyBtn').textContent                  = tr.copy;
+    document.getElementById('gotoBtn').textContent                  = tr.gotoBtn;
+    document.getElementById('yourCodeLabel').textContent            = tr.yourCodeLabel;
+    document.getElementById('successNote').textContent              = tr.successNote;
   }
 
-  // ── Masthead date (set initially) ─────────────────────────────────────
   document.getElementById('mastheadDate').textContent = formatDate(currentLang);
 
-  // ── Markdown parser ───────────────────────────────────────────────────
-  function parseMarkdown(md) {
-    const result = {};
-    let currentGroup = null;
-    for (const line of md.split('\n')) {
-      if (line.startsWith('## ')) {
-        currentGroup = line.slice(3).trim();
-        result[currentGroup] = result[currentGroup] || [];
-      } else if (line.startsWith('- ') && currentGroup) {
-        let raw = line.slice(2).trim();
-        const urgent = raw.endsWith('[urgent]');
-        if (urgent) raw = raw.slice(0, -8).trim();
-        const whenMatch = raw.match(/\[([^\]]+)\]$/);
-        const when  = whenMatch ? whenMatch[1] : null;
-        const title = whenMatch ? raw.slice(0, whenMatch.index).trim() : raw;
-        result[currentGroup].push({ title, when, urgent, notes: null });
-      } else if (line.startsWith('  ↳ ') && currentGroup) {
-        const group = result[currentGroup];
-        if (group.length > 0) group[group.length - 1].notes = line.slice(4).trim();
-      }
+  // ── Tab switching ────────────────────────────────────────────────────
+  const panels = { join: 'joinPanel', create: 'createPanel', success: 'successPanel' };
+
+  function showPanel(name) {
+    for (const [key, id] of Object.entries(panels)) {
+      document.getElementById(id).classList.toggle('active', key === name);
     }
-    return result;
+    document.getElementById('tabJoin').classList.toggle('active', name === 'join');
+    document.getElementById('tabCreate').classList.toggle('active', name === 'create' || name === 'success');
   }
 
-  // ── Render sections ───────────────────────────────────────────────────
-  function populateSections(grouped) {
-    const tr = t();
-    for (const group of GROUPS) {
-      const items   = grouped[group] || [];
-      const listEl  = document.getElementById(`list-${group}`);
-      const emptyEl = document.getElementById(`empty-${group}`);
-      const countEl = document.getElementById(`count-${group}`);
+  document.getElementById('tabJoin').addEventListener('click', () => showPanel('join'));
+  document.getElementById('tabCreate').addEventListener('click', () => showPanel('create'));
 
-      listEl.innerHTML = '';
-
-      if (items.length === 0) {
-        listEl.style.display  = 'none';
-        emptyEl.style.display = 'block';
-        countEl.style.display = 'none';
-      } else {
-        items.forEach(({ title, when, urgent, notes }, i) => {
-          const li = document.createElement('li');
-          if (urgent) li.classList.add('urgent');
-          li.style.animationDelay = `${i * 45}ms`;
-
-          const titleSpan = document.createElement('span');
-          titleSpan.className   = 'item-title';
-          titleSpan.textContent = title;
-          li.appendChild(titleSpan);
-
-          if (when) {
-            const whenSpan = document.createElement('span');
-            whenSpan.className   = 'item-when';
-            whenSpan.textContent = when;
-            li.appendChild(whenSpan);
-          }
-
-          if (urgent) {
-            const tag = document.createElement('span');
-            tag.className   = 'item-urgent-tag';
-            tag.textContent = tr.urgentTag;
-            li.appendChild(tag);
-          }
-
-          const deleteBtn = document.createElement('button');
-          deleteBtn.className   = 'item-delete';
-          deleteBtn.setAttribute('aria-label', 'Remove item');
-          deleteBtn.innerHTML   = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1.5 3h10M4.5 3V1.5h4V3M3 3l.6 8h5.8L10 3"/></svg>`;
-          deleteBtn.addEventListener('click', () => deleteItem(group, title));
-          li.appendChild(deleteBtn);
-
-          if (notes) {
-            const noteEl = document.createElement('span');
-            noteEl.className   = 'item-note';
-            noteEl.textContent = notes;
-            li.appendChild(noteEl);
-          }
-
-          listEl.appendChild(li);
-        });
-
-        listEl.style.display  = 'block';
-        emptyEl.style.display = 'none';
-        countEl.textContent   = tr.itemCount(items.length);
-        countEl.style.display = 'block';
-      }
-    }
+  // ── Error helpers ────────────────────────────────────────────────────
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent   = `↳ ${msg}`;
+    el.style.display = 'block';
+  }
+  function clearError(id) {
+    document.getElementById(id).style.display = 'none';
   }
 
-  // ── Storage ───────────────────────────────────────────────────────────
-  function saveToStorage(grouped) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(grouped));
-  }
+  // ── Join ─────────────────────────────────────────────────────────────
+  const joinBtn = document.getElementById('joinBtn');
+  joinBtn.addEventListener('click', async () => {
+    clearError('joinError');
+    const code = document.getElementById('joinCode').value.trim().toUpperCase();
+    const name = document.getElementById('joinName').value.trim();
+    if (!code || !name) { showError('joinError', t().joinRequired); return; }
 
-  function loadFromStorage() {
+    joinBtn.disabled    = true;
+    joinBtn.textContent = t().joining;
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : {};
-    } catch { return {}; }
-  }
-
-  function deleteItem(group, title) {
-    const current = loadFromStorage();
-    if (current[group]) {
-      current[group] = current[group].filter(i => i.title !== title);
-      if (current[group].length === 0) delete current[group];
-    }
-    saveToStorage(current);
-    populateSections(current);
-  }
-
-  function mergeGrouped(existing, incoming) {
-    const merged = JSON.parse(JSON.stringify(existing));
-    for (const [group, items] of Object.entries(incoming)) {
-      if (!merged[group]) {
-        merged[group] = items;
-      } else {
-        const seen = new Set(merged[group].map(i => i.title.toLowerCase()));
-        for (const item of items) {
-          if (!seen.has(item.title.toLowerCase())) {
-            merged[group].push(item);
-            seen.add(item.title.toLowerCase());
-          }
-        }
-      }
-    }
-    return merged;
-  }
-
-  // ── UI state ──────────────────────────────────────────────────────────
-  function setLoading(msg) {
-    statusEl.innerHTML    = `<div class="spinner"></div><span>${msg}</span>`;
-    errorEl.style.display = 'none';
-    processBtn.disabled   = true;
-    micBtn.disabled       = true;
-  }
-
-  function clearLoading() {
-    statusEl.innerHTML  = '';
-    processBtn.disabled = false;
-    micBtn.disabled     = false;
-  }
-
-  function showError(msg) {
-    clearLoading();
-    errorEl.textContent   = `↳ ${msg}`;
-    errorEl.style.display = 'block';
-  }
-
-  function showResult(markdown) {
-    clearLoading();
-    errorEl.style.display = 'none';
-    const merged = mergeGrouped(loadFromStorage(), parseMarkdown(markdown));
-    saveToStorage(merged);
-    populateSections(merged);
-  }
-
-  // ── Text submit ───────────────────────────────────────────────────────
-  processBtn.addEventListener('click', async () => {
-    const text = textarea.value.trim();
-    if (!text) { showError(t().nothing); return; }
-
-    setLoading(t().processing);
-    try {
-      const res  = await fetch('/api/process', {
+      const res  = await fetch('/api/family/join', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ text, lang: currentLang }),
+        body:    JSON.stringify({ code, name }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || `Server error ${res.status}`);
-      showResult(data.result);
-    } catch (err) {
-      showError(err.message);
+      if (!res.ok) {
+        showError('joinError', t().wrongCode);
+        return;
+      }
+      localStorage.setItem(CODE_KEY, code);
+      localStorage.setItem(NAME_KEY, name);
+      localStorage.setItem(GROUP_NAME_KEY, data.groupName || '');
+      window.location.href = '/family.html';
+    } catch {
+      showError('joinError', t().connectErr);
+    } finally {
+      joinBtn.disabled    = false;
+      joinBtn.textContent = t().joinBtn;
     }
   });
 
-  // ── Voice recording ───────────────────────────────────────────────────
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition = null;
+  document.getElementById('joinName').addEventListener('keydown', e => { if (e.key === 'Enter') joinBtn.click(); });
+  document.getElementById('joinCode').addEventListener('keydown', e => { if (e.key === 'Enter') joinBtn.click(); });
 
-  if (!SpeechRecognition) {
-    micBtn.disabled = true;
-    micBtn.title    = 'Voice input requires Chrome or Edge.';
-  } else {
-    recognition                 = new SpeechRecognition();
-    recognition.continuous      = true;
-    recognition.interimResults  = true;
-    recognition.lang            = T[currentLang].voiceLang;
+  // ── Create ───────────────────────────────────────────────────────────
+  const createBtn = document.getElementById('createBtn');
+  createBtn.addEventListener('click', async () => {
+    clearError('createError');
+    const groupName = document.getElementById('groupName').value.trim();
+    const name      = document.getElementById('createName').value.trim();
+    if (!groupName || !name) { showError('createError', t().createRequired); return; }
 
-    let finalTranscript = '';
+    createBtn.disabled    = true;
+    createBtn.textContent = t().creating;
+    try {
+      const res  = await fetch('/api/family/create', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ groupName, name }),
+      });
+      const data = await res.json();
+      if (!res.ok) { showError('createError', data.error); return; }
 
-    recognition.addEventListener('result', (e) => {
-      let interim = '';
-      finalTranscript = '';
-      for (const result of e.results) {
-        if (result.isFinal) finalTranscript += result[0].transcript + ' ';
-        else interim += result[0].transcript;
-      }
-      textarea.value = (finalTranscript + interim).trim();
-    });
+      localStorage.setItem(CODE_KEY, data.code);
+      localStorage.setItem(NAME_KEY, name);
+      localStorage.setItem(GROUP_NAME_KEY, data.groupName);
 
-    recognition.addEventListener('end', async () => {
-      if (!recording) return;
-      recording = false;
-      micBtn.classList.remove('recording');
-      micLabel.textContent = t().record;
+      document.getElementById('createdCode').textContent = data.code;
+      showPanel('success');
+    } catch {
+      showError('createError', t().connectErr);
+    } finally {
+      createBtn.disabled    = false;
+      createBtn.textContent = t().createBtn;
+    }
+  });
 
-      const text = finalTranscript.trim();
-      if (!text) { clearLoading(); showError(t().notHeard); return; }
+  document.getElementById('createName').addEventListener('keydown', e => { if (e.key === 'Enter') createBtn.click(); });
 
-      textarea.value = text;
-      setLoading(t().processing);
-      try {
-        const res  = await fetch('/api/process', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ text, lang: currentLang }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Server error ${res.status}`);
-        showResult(data.result);
-      } catch (err) {
-        showError(err.message);
-      }
-    });
+  // ── Copy code ────────────────────────────────────────────────────────
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const code  = document.getElementById('createdCode').textContent;
+    const btn   = document.getElementById('copyBtn');
+    try {
+      await navigator.clipboard.writeText(code);
+      btn.textContent = t().copied;
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = t().copy;
+        btn.classList.remove('copied');
+      }, 2000);
+    } catch {
+      // Clipboard unavailable — ignore
+    }
+  });
 
-    recognition.addEventListener('error', (e) => {
-      recording = false;
-      micBtn.classList.remove('recording');
-      micLabel.textContent = t().record;
-      clearLoading();
-      showError(e.error === 'not-allowed'
-        ? t().micDenied
-        : `${t().voiceErr}${e.error}`);
-    });
+  // ── Go to calendar ───────────────────────────────────────────────────
+  document.getElementById('gotoBtn').addEventListener('click', () => {
+    window.location.href = '/family.html';
+  });
 
-    micBtn.addEventListener('click', () => {
-      if (recording) { recognition.stop(); return; }
-      finalTranscript       = '';
-      textarea.value        = '';
-      recording             = true;
-      micBtn.classList.add('recording');
-      micLabel.textContent  = t().stop;
-      statusEl.innerHTML    = `<div class="spinner"></div><span>${t().listening}</span>`;
-      errorEl.style.display = 'none';
-      recognition.start();
-    });
-  }
-
-  // ── Language switcher ─────────────────────────────────────────────────
+  // ── Language toggle ───────────────────────────────────────────────────
   document.getElementById('langEn').addEventListener('click', () => applyLang('en'));
   document.getElementById('langSv').addEventListener('click', () => applyLang('sv'));
 
-  // ── Initial render ────────────────────────────────────────────────────
+  // ── Init ─────────────────────────────────────────────────────────────
   applyLang(currentLang);
-  const saved = loadFromStorage();
-  if (Object.keys(saved).length) populateSections(saved);
 </script>
 </body>
 </html>
