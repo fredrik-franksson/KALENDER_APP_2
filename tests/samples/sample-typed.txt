@@ -1,0 +1,1 @@
+# Sample typed input for manual pipeline testing.

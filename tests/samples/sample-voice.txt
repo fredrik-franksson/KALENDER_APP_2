@@ -1,0 +1,1 @@
+# Sample transcribed voice input for manual pipeline testing.

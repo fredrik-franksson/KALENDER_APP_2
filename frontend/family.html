@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">BrainDump — Group Schedule</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper:   #F3F1EC;
+      --ink:     #0F0F0E;
+      --ink-2:   #6E6B66;
+      --rule:    #CBC8C2;
+      --surface: #E7E5E0;
+      --green:   #1B3D2C;
+      --red:     #B91C1C;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+    @media (max-width: 600px) { .wrap { padding: 0 20px; } }
+
+    /* ── Masthead ── */
+    .masthead {
+      padding: 32px 0 24px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid var(--ink);
+    }
+
+    .masthead-left {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .masthead-wordmark {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .masthead-sep {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--rule);
+    }
+
+    .masthead-section {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .masthead-right {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+    }
+
+    .masthead-user {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--ink-2);
+    }
+    .masthead-user button {
+      background: none;
+      border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--ink-2);
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+      margin-left: 8px;
+      transition: color 0.15s;
+    }
+    .masthead-user button:hover { color: var(--ink); }
+
+    /* ── Language toggle ── */
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .lang-btn {
+      background: none;
+      border: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      color: var(--ink-2);
+      padding: 0;
+      transition: color 0.15s;
+    }
+    .lang-btn.active { color: var(--ink); }
+    .lang-btn:hover  { color: var(--ink); }
+    .lang-sep {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--rule);
+      user-select: none;
+    }
+
+    .masthead-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--ink-2);
+    }
+
+    /* ── Join section ── */
+    .join-section {
+      max-width: 480px;
+      margin: 100px auto 0;
+      text-align: center;
+    }
+    .join-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.63rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      margin-bottom: 16px;
+    }
+    .join-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(2.4rem, 4vw, 3.2rem);
+      line-height: 1.1;
+      margin-bottom: 48px;
+    }
+    .join-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .join-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    .join-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--rule);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--ink);
+      padding: 10px 0;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+    .join-input:focus { border-bottom-color: var(--ink); }
+    .join-btn {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 12px 36px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    .join-btn:hover:not(:disabled) { background: var(--green); }
+    .join-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .join-error {
+      margin-top: 14px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--red);
+    }
+
+    /* ── Calendar section ── */
+    .calendar-header {
+      padding: 44px 0 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--rule);
+    }
+    .btn-add {
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      padding: 10px 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.15s;
+    }
+    .btn-add:hover { border-color: var(--ink); }
+
+    .btn-mic {
+      background: transparent;
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      padding: 10px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.15s;
+    }
+    .btn-mic:hover:not(:disabled) { border-color: var(--ink); }
+    .btn-mic:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-mic.recording { border-color: var(--red); color: var(--red); }
+
+    .mic-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-mic.recording .mic-dot {
+      background: var(--red);
+      animation: blink 1s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    .voice-status {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--ink-2);
+      font-style: italic;
+      min-height: 18px;
+      margin-top: 12px;
+    }
+    .voice-status.error { color: var(--red); font-style: normal; }
+
+    .header-controls { display: flex; align-items: center; gap: 10px; }
+
+    /* ── Add form ── */
+    .add-form {
+      border-bottom: 1px solid var(--rule);
+      padding: 36px 0;
+      display: none;
+    }
+    .add-form.open { display: block; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 200px;
+      gap: 0 48px;
+    }
+    @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 24px;
+    }
+    .form-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    .form-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--rule);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--ink);
+      padding: 8px 0;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-bottom-color: var(--ink); }
+    input[type="date"].form-input {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--ink-2);
+    }
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding-top: 8px;
+    }
+    .btn-save {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 11px 28px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-save:hover:not(:disabled) { background: var(--green); }
+    .btn-save:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-cancel {
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      color: var(--ink-2);
+      cursor: pointer;
+      padding: 11px 0;
+      transition: color 0.15s;
+    }
+    .btn-cancel:hover { color: var(--ink); }
+
+    /* ── Event groups ── */
+    .groups { padding-bottom: 100px; }
+    .group {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      column-gap: 56px;
+      padding: 44px 0;
+      border-bottom: 1px solid var(--rule);
+      align-items: start;
+    }
+    @media (max-width: 680px) {
+      .group { grid-template-columns: 1fr; row-gap: 18px; padding: 32px 0; }
+    }
+    .group-name {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(2.8rem, 3.8vw, 3.8rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      padding-top: 2px;
+    }
+    .group.past .group-name { color: var(--rule); }
+    .empty-state {
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      color: var(--rule);
+      padding-top: 6px;
+    }
+
+    /* ── Event card ── */
+    .event-list { list-style: none; }
+    .event-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--surface);
+      animation: fadeUp 0.25s ease both;
+    }
+    .event-item:last-child { border-bottom: none; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .event-top {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .event-title {
+      font-size: 0.95rem;
+      font-weight: 400;
+      flex: 1;
+    }
+    .event-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--ink-2);
+      white-space: nowrap;
+    }
+    .event-meta {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--rule);
+      letter-spacing: 0.04em;
+      margin-top: 4px;
+    }
+    .event-notes {
+      font-size: 0.78rem;
+      color: var(--ink-2);
+      font-style: italic;
+      margin-top: 6px;
+    }
+
+    /* ── Reactions ── */
+    .reaction-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .reaction-names {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--ink-2);
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .reaction-names span { display: flex; gap: 5px; align-items: center; }
+    .react-btns { display: flex; gap: 8px; margin-left: auto; align-items: center; }
+    .react-btn {
+      background: transparent;
+      border: 1px solid var(--rule);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      color: var(--ink-2);
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .react-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .react-btn.active-up   { border-color: var(--green); color: var(--green); background: rgba(27,61,44,0.06); }
+    .react-btn.active-down { border-color: var(--red);   color: var(--red);   background: rgba(185,28,28,0.06); }
+
+    .btn-delete-event {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--rule);
+      padding: 0;
+      margin-left: 6px;
+      line-height: 0;
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+    .btn-delete-event:hover { color: var(--red); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .event-item { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="masthead">
+      <div class="masthead-left">
+        <a href="/" class="masthead-wordmark">BrainDump</a>
+        <span class="masthead-sep">/</span>
+        <span class="masthead-section" id="mastheadSection">Group Schedule</span>
+      </div>
+      <div class="masthead-right">
+        <span class="masthead-user" id="mastheadUser" style="display:none"></span>
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="langEn">EN</button>
+          <span class="lang-sep">·</span>
+          <button class="lang-btn" id="langSv">SV</button>
+        </div>
+        <span class="masthead-date" id="mastheadDate"></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <!-- ── Join ── -->
+    <section id="joinSection" class="join-section">
+      <p class="join-eyebrow" id="joinEyebrow">Group schedule</p>
+      <h1 class="join-heading" id="joinHeading">Join your group</h1>
+
+      <div class="join-field">
+        <label class="join-label" id="codeLabel" for="joinCode">Group code</label>
+        <input class="join-input" type="text" id="joinCode" autocomplete="off" />
+      </div>
+
+      <div class="join-field">
+        <label class="join-label" id="nameLabel" for="joinName">Your first name</label>
+        <input class="join-input" type="text" id="joinName" autocomplete="given-name" />
+      </div>
+
+      <button class="join-btn" id="joinBtn">Join</button>
+      <p class="join-error" id="joinError" style="display:none"></p>
+    </section>
+
+    <!-- ── Calendar ── -->
+    <section id="calendarSection" style="display:none">
+
+      <div class="calendar-header">
+        <div class="header-controls">
+          <button class="btn-add" id="addBtn">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+              <path d="M6.5 1v11M1 6.5h11"/>
+            </svg>
+            <span id="addBtnLabel">New event</span>
+          </button>
+          <button class="btn-mic" id="micBtn">
+            <span class="mic-dot"></span>
+            <span id="micLabel">Record</span>
+          </button>
+        </div>
+        <p class="voice-status" id="voiceStatus"></p>
+      </div>
+
+      <!-- Add form -->
+      <div class="add-form" id="addForm">
+        <div class="form-grid">
+          <div>
+            <div class="form-field">
+              <label class="form-label" id="whatLabel" for="eventTitle">What's happening?</label>
+              <input class="form-input" type="text" id="eventTitle" />
+            </div>
+            <div class="form-field">
+              <label class="form-label" id="detailsLabel" for="eventNotes">Details (optional)</label>
+              <input class="form-input" type="text" id="eventNotes" />
+            </div>
+          </div>
+          <div>
+            <div class="form-field">
+              <label class="form-label" id="whenLabel" for="eventDate">When?</label>
+              <input class="form-input" type="date" id="eventDate" />
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" id="saveBtn">Add event</button>
+          <button class="btn-cancel" id="cancelBtn">Cancel</button>
+        </div>
+      </div>
+
+      <!-- Event groups -->
+      <div class="groups" id="groups"></div>
+
+    </section>
+
+  </div>
+</main>
+
+<script>
+  // ── Translations ───────────────────────────────────────────────────────
+  const T = {
+    en: {
+      pageTitle:      'BrainDump — Group Schedule',
+      sectionName:    'Group Schedule',
+      eyebrow:        'Group schedule',
+      joinHeading:    'Join your group',
+      codeLabel:      'Group code',
+      codePlaceholder:'Enter the shared code…',
+      nameLabel:      'Your first name',
+      namePlaceholder:'Your name…',
+      joinBtn:        'Join',
+      joining:        'Joining…',
+      notYou:         'not you?',
+      newEvent:       'New event',
+      whatLabel:      "What's happening?",
+      whatPlaceholder:'Family dinner, movie night…',
+      detailsLabel:   'Details (optional)',
+      detailsPlaceholder: 'Bring something, meet at…',
+      whenLabel:      'When?',
+      addEvent:       'Add event',
+      adding:         'Adding…',
+      cancel:         'Cancel',
+      groups:         { Today: 'Today', 'This Week': 'This Week', 'Next Week': 'Next Week', Upcoming: 'Upcoming', Past: 'Past' },
+      addedBy:        (n) => `added by ${n}`,
+      noResponses:    'No responses yet',
+      going:          '👍 Going',
+      cantMake:       "👎 Can't make it",
+      joinRequired:   'Please enter both the group code and your name.',
+      wrongCode:      'Wrong group code.',
+      connectErr:     'Could not connect to server.',
+      deleteConfirm:  'Delete this event?',
+      loadErr:        'Could not load events.',
+      saveErr:        'Could not save event.',
+      voiceLang:      'en-US',
+      record:         'Record',
+      stop:           'Stop',
+      listening:      'Listening…',
+      notHeard:       'Nothing was heard — try again.',
+      micDenied:      'Microphone access denied.',
+      voiceErr:       'Voice error: ',
+    },
+    sv: {
+      pageTitle:      'BrainDump — Gruppschemat',
+      sectionName:    'Gruppschemat',
+      eyebrow:        'Gruppschema',
+      joinHeading:    'Gå med i gruppen',
+      codeLabel:      'Gruppkod',
+      codePlaceholder:'Ange koden…',
+      nameLabel:      'Ditt förnamn',
+      namePlaceholder:'Ditt namn…',
+      joinBtn:        'Gå med',
+      joining:        'Ansluter…',
+      notYou:         'inte du?',
+      newEvent:       'Nytt event',
+      whatLabel:      'Vad händer?',
+      whatPlaceholder:'Familjemiddag, filmkväll…',
+      detailsLabel:   'Detaljer (valfritt)',
+      detailsPlaceholder: 'Ta med något, träffas vid…',
+      whenLabel:      'När?',
+      addEvent:       'Lägg till',
+      adding:         'Lägger till…',
+      cancel:         'Avbryt',
+      groups:         { Today: 'Idag', 'This Week': 'Den här veckan', 'Next Week': 'Nästa vecka', Upcoming: 'Kommande', Past: 'Passerat' },
+      addedBy:        (n) => `tillagd av ${n}`,
+      noResponses:    'Inga svar ännu',
+      going:          '👍 Jag kommer',
+      cantMake:       '👎 Kan inte',
+      joinRequired:   'Ange koden och ditt namn.',
+      wrongCode:      'Fel gruppkod.',
+      connectErr:     'Kunde inte ansluta till servern.',
+      deleteConfirm:  'Ta bort detta event?',
+      loadErr:        'Kunde inte ladda events.',
+      saveErr:        'Kunde inte spara.',
+      voiceLang:      'sv-SE',
+      record:         'Spela in',
+      stop:           'Stopp',
+      listening:      'Lyssnar…',
+      notHeard:       'Inget hördes — försök igen.',
+      micDenied:      'Mikrofonåtkomst nekad.',
+      voiceErr:       'Röstfel: ',
+    },
+  };
+
+  // ── Date helpers ──────────────────────────────────────────────────────
+  const DAYS = {
+    en: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    sv: ['söndag','måndag','tisdag','onsdag','torsdag','fredag','lördag'],
+  };
+  const MONTHS = {
+    en: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    sv: ['januari','februari','mars','april','maj','juni','juli','augusti','september','oktober','november','december'],
+  };
+
+  function formatToday(lang) {
+    const d = new Date();
+    return `${DAYS[lang][d.getDay()]} ${d.getDate()} ${MONTHS[lang][d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function displayDate(isoDate, lang) {
+    if (!isoDate) return '';
+    const [y, m, d] = isoDate.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    return `${DAYS[lang][date.getDay()]} ${d} ${MONTHS[lang][m - 1]}`;
+  }
+
+  function getGroup(isoDate) {
+    if (!isoDate) return 'Upcoming';
+    const [y, m, d] = isoDate.split('-').map(Number);
+    const event = new Date(y, m - 1, d);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const diff  = Math.round((event - today) / 864e5);
+    if (diff < 0)   return 'Past';
+    if (diff === 0) return 'Today';
+    if (diff <= 6)  return 'This Week';
+    if (diff <= 13) return 'Next Week';
+    return 'Upcoming';
+  }
+
+  // ── Language state ────────────────────────────────────────────────────
+  const LANG_KEY  = 'braindump_lang';
+  let currentLang = localStorage.getItem(LANG_KEY) || 'en';
+  const t         = () => T[currentLang];
+  let recording   = false;
+
+  let cachedEvents = [];
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem(LANG_KEY, lang);
+
+    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+    document.getElementById('langSv').classList.toggle('active', lang === 'sv');
+
+    const tr = T[lang];
+    document.title                                            = tr.pageTitle;
+    document.getElementById('mastheadSection').textContent   = tr.sectionName;
+    document.getElementById('mastheadDate').textContent      = formatToday(lang);
+    document.getElementById('joinEyebrow').textContent       = tr.eyebrow;
+    document.getElementById('joinHeading').textContent       = tr.joinHeading;
+    document.getElementById('codeLabel').textContent         = tr.codeLabel;
+    document.getElementById('joinCode').placeholder          = tr.codePlaceholder;
+    document.getElementById('nameLabel').textContent         = tr.nameLabel;
+    document.getElementById('joinName').placeholder          = tr.namePlaceholder;
+    document.getElementById('joinBtn').textContent           = tr.joinBtn;
+    document.getElementById('addBtnLabel').textContent       = tr.newEvent;
+    document.getElementById('whatLabel').textContent         = tr.whatLabel;
+    document.getElementById('eventTitle').placeholder        = tr.whatPlaceholder;
+    document.getElementById('detailsLabel').textContent      = tr.detailsLabel;
+    document.getElementById('eventNotes').placeholder        = tr.detailsPlaceholder;
+    document.getElementById('whenLabel').textContent         = tr.whenLabel;
+    document.getElementById('saveBtn').textContent           = tr.addEvent;
+    document.getElementById('cancelBtn').textContent         = tr.cancel;
+    if (!recording) document.getElementById('micLabel').textContent = tr.record;
+    if (recognition) recognition.lang = tr.voiceLang;
+
+    // Update "not you?" if visible
+    const userEl = document.getElementById('mastheadUser');
+    if (userEl.style.display !== 'none' && familyName) {
+      userEl.innerHTML =
+        `${familyName} <button id="switchBtn">${tr.notYou}</button>`;
+      document.getElementById('switchBtn').addEventListener('click', switchUser);
+    }
+
+    // Re-render events with new language
+    if (cachedEvents.length) renderEvents(cachedEvents);
+  }
+
+  // ── Auth state ────────────────────────────────────────────────────────
+  const CODE_KEY = 'family_code';
+  const NAME_KEY = 'family_name';
+
+  let familyCode = localStorage.getItem(CODE_KEY) || '';
+  let familyName = localStorage.getItem(NAME_KEY) || '';
+
+  function apiHeaders() {
+    return { 'Content-Type': 'application/json', 'x-family-code': familyCode };
+  }
+
+  // ── DOM refs ──────────────────────────────────────────────────────────
+  const joinSection     = document.getElementById('joinSection');
+  const calendarSection = document.getElementById('calendarSection');
+  const mastheadUser    = document.getElementById('mastheadUser');
+  const joinCodeInput   = document.getElementById('joinCode');
+  const joinNameInput   = document.getElementById('joinName');
+  const joinBtn         = document.getElementById('joinBtn');
+  const joinError       = document.getElementById('joinError');
+  const addBtn          = document.getElementById('addBtn');
+  const addForm         = document.getElementById('addForm');
+  const eventTitle      = document.getElementById('eventTitle');
+  const eventDate       = document.getElementById('eventDate');
+  const eventNotes      = document.getElementById('eventNotes');
+  const saveBtn         = document.getElementById('saveBtn');
+  const cancelBtn       = document.getElementById('cancelBtn');
+  const groupsEl        = document.getElementById('groups');
+
+  // ── Views ─────────────────────────────────────────────────────────────
+  function showCalendar() {
+    joinSection.style.display     = 'none';
+    calendarSection.style.display = 'block';
+    mastheadUser.style.display    = 'inline';
+    mastheadUser.innerHTML =
+      `${familyName} <button id="switchBtn">${t().notYou}</button>`;
+    document.getElementById('switchBtn').addEventListener('click', switchUser);
+    loadEvents();
+  }
+
+  function showJoin() {
+    joinSection.style.display     = 'block';
+    calendarSection.style.display = 'none';
+    mastheadUser.style.display    = 'none';
+  }
+
+  function switchUser() {
+    localStorage.removeItem(CODE_KEY);
+    localStorage.removeItem(NAME_KEY);
+    familyCode = '';
+    familyName = '';
+    cachedEvents = [];
+    showJoin();
+  }
+
+  // ── Join ──────────────────────────────────────────────────────────────
+  joinBtn.addEventListener('click', async () => {
+    const code = joinCodeInput.value.trim();
+    const name = joinNameInput.value.trim();
+    if (!code || !name) { showJoinError(t().joinRequired); return; }
+
+    joinBtn.disabled    = true;
+    joinBtn.textContent = t().joining;
+    try {
+      const res  = await fetch('/api/family/join', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ code, name }),
+      });
+      const data = await res.json();
+      if (!res.ok) { showJoinError(data.error === 'Wrong family code.' ? t().wrongCode : data.error); return; }
+      familyCode = code;
+      familyName = name;
+      localStorage.setItem(CODE_KEY, code);
+      localStorage.setItem(NAME_KEY, name);
+      showCalendar();
+    } catch {
+      showJoinError(t().connectErr);
+    } finally {
+      joinBtn.disabled    = false;
+      joinBtn.textContent = t().joinBtn;
+    }
+  });
+
+  joinNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') joinBtn.click(); });
+
+  function showJoinError(msg) {
+    joinError.textContent   = msg;
+    joinError.style.display = 'block';
+  }
+
+  // ── Load & render events ──────────────────────────────────────────────
+  async function loadEvents() {
+    try {
+      const res  = await fetch('/api/family/events', { headers: apiHeaders() });
+      if (res.status === 401) { switchUser(); return; }
+      const data = await res.json();
+      cachedEvents = data.events;
+      renderEvents(cachedEvents);
+    } catch {
+      groupsEl.innerHTML =
+        `<p style="color:var(--ink-2);padding:40px 0;font-size:0.85rem;">${t().loadErr}</p>`;
+    }
+  }
+
+  setInterval(loadEvents, 30000);
+
+  const GROUP_ORDER = ['Today', 'This Week', 'Next Week', 'Upcoming', 'Past'];
+
+  function renderEvents(events) {
+    const tr      = t();
+    const grouped = {};
+    for (const g of GROUP_ORDER) grouped[g] = [];
+    for (const e of events) grouped[getGroup(e.date)].push(e);
+
+    groupsEl.innerHTML = '';
+
+    for (const groupKey of GROUP_ORDER) {
+      const items = grouped[groupKey];
+
+      const section = document.createElement('div');
+      section.className = 'group' + (groupKey === 'Past' ? ' past' : '');
+
+      const label = document.createElement('span');
+      label.className   = 'group-name';
+      label.textContent = tr.groups[groupKey];
+      section.appendChild(label);
+
+      const content = document.createElement('div');
+
+      if (items.length === 0) {
+        const empty = document.createElement('p');
+        empty.className   = 'empty-state';
+        empty.textContent = '—';
+        content.appendChild(empty);
+      } else {
+        const ul = document.createElement('ul');
+        ul.className = 'event-list';
+        items.forEach((event, i) => ul.appendChild(buildEventEl(event, i, tr)));
+        content.appendChild(ul);
+      }
+
+      section.appendChild(content);
+      groupsEl.appendChild(section);
+    }
+  }
+
+  function buildEventEl(event, delay, tr) {
+    const li = document.createElement('li');
+    li.className = 'event-item';
+    li.style.animationDelay = `${delay * 40}ms`;
+
+    const top = document.createElement('div');
+    top.className = 'event-top';
+
+    const titleEl = document.createElement('span');
+    titleEl.className   = 'event-title';
+    titleEl.textContent = event.title;
+    top.appendChild(titleEl);
+
+    if (event.date) {
+      const dateEl = document.createElement('span');
+      dateEl.className   = 'event-date';
+      dateEl.textContent = displayDate(event.date, currentLang);
+      top.appendChild(dateEl);
+    }
+
+    if (event.createdBy === familyName) {
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-delete-event';
+      delBtn.setAttribute('aria-label', 'Delete event');
+      delBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1.5 3h10M4.5 3V1.5h4V3M3 3l.6 8h5.8L10 3"/></svg>`;
+      delBtn.addEventListener('click', () => deleteEvent(event.id));
+      top.appendChild(delBtn);
+    }
+    li.appendChild(top);
+
+    const meta = document.createElement('p');
+    meta.className   = 'event-meta';
+    meta.textContent = tr.addedBy(event.createdBy);
+    li.appendChild(meta);
+
+    if (event.notes) {
+      const notes = document.createElement('p');
+      notes.className   = 'event-notes';
+      notes.textContent = event.notes;
+      li.appendChild(notes);
+    }
+
+    const reactionRow = document.createElement('div');
+    reactionRow.className = 'reaction-row';
+
+    const names = document.createElement('div');
+    names.className = 'reaction-names';
+    const ups   = Object.entries(event.reactions).filter(([, v]) => v === 'up').map(([k]) => k);
+    const downs = Object.entries(event.reactions).filter(([, v]) => v === 'down').map(([k]) => k);
+
+    if (ups.length || downs.length) {
+      if (ups.length) {
+        const s = document.createElement('span');
+        s.innerHTML = `<span>👍</span>${ups.join(', ')}`;
+        names.appendChild(s);
+      }
+      if (downs.length) {
+        const s = document.createElement('span');
+        s.innerHTML = `<span>👎</span>${downs.join(', ')}`;
+        names.appendChild(s);
+      }
+    } else {
+      names.textContent = tr.noResponses;
+    }
+    reactionRow.appendChild(names);
+
+    const myReaction = event.reactions[familyName];
+    const btns = document.createElement('div');
+    btns.className = 'react-btns';
+
+    const upBtn = document.createElement('button');
+    upBtn.className = 'react-btn' + (myReaction === 'up' ? ' active-up' : '');
+    upBtn.textContent = tr.going;
+    upBtn.addEventListener('click', () => react(event.id, myReaction === 'up' ? null : 'up'));
+
+    const downBtn = document.createElement('button');
+    downBtn.className = 'react-btn' + (myReaction === 'down' ? ' active-down' : '');
+    downBtn.textContent = tr.cantMake;
+    downBtn.addEventListener('click', () => react(event.id, myReaction === 'down' ? null : 'down'));
+
+    btns.appendChild(upBtn);
+    btns.appendChild(downBtn);
+    reactionRow.appendChild(btns);
+    li.appendChild(reactionRow);
+
+    return li;
+  }
+
+  // ── Add event ─────────────────────────────────────────────────────────
+  addBtn.addEventListener('click', () => {
+    addForm.classList.toggle('open');
+    if (addForm.classList.contains('open')) eventTitle.focus();
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    addForm.classList.remove('open');
+    eventTitle.value = '';
+    eventDate.value  = '';
+    eventNotes.value = '';
+  });
+
+  saveBtn.addEventListener('click', async () => {
+    const title = eventTitle.value.trim();
+    if (!title) { eventTitle.focus(); return; }
+
+    saveBtn.disabled    = true;
+    saveBtn.textContent = t().adding;
+    try {
+      const res = await fetch('/api/family/events', {
+        method:  'POST',
+        headers: apiHeaders(),
+        body:    JSON.stringify({
+          title,
+          date:      eventDate.value || null,
+          notes:     eventNotes.value.trim() || '',
+          createdBy: familyName,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) { alert(data.error); return; }
+      cancelBtn.click();
+      loadEvents();
+    } catch {
+      alert(t().saveErr);
+    } finally {
+      saveBtn.disabled    = false;
+      saveBtn.textContent = t().addEvent;
+    }
+  });
+
+  // ── React ─────────────────────────────────────────────────────────────
+  async function react(eventId, reaction) {
+    try {
+      await fetch(`/api/family/events/${eventId}/react`, {
+        method:  'POST',
+        headers: apiHeaders(),
+        body:    JSON.stringify({ name: familyName, reaction }),
+      });
+      loadEvents();
+    } catch {}
+  }
+
+  // ── Delete ────────────────────────────────────────────────────────────
+  async function deleteEvent(eventId) {
+    if (!confirm(t().deleteConfirm)) return;
+    try {
+      await fetch(`/api/family/events/${eventId}`, {
+        method: 'DELETE', headers: apiHeaders(),
+      });
+      loadEvents();
+    } catch {}
+  }
+
+  // ── Voice recording ───────────────────────────────────────────────────
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const micBtn            = document.getElementById('micBtn');
+  const micLabel          = document.getElementById('micLabel');
+  const voiceStatus       = document.getElementById('voiceStatus');
+  let   recognition       = null;
+
+  if (!SpeechRecognition) {
+    micBtn.disabled = true;
+    micBtn.title    = 'Voice input requires Chrome or Edge.';
+  } else {
+    recognition                = new SpeechRecognition();
+    recognition.continuous     = true;
+    recognition.interimResults = true;
+    recognition.lang           = T[currentLang].voiceLang;
+
+    let finalTranscript = '';
+
+    recognition.addEventListener('result', (e) => {
+      let interim = '';
+      finalTranscript = '';
+      for (const result of e.results) {
+        if (result.isFinal) finalTranscript += result[0].transcript + ' ';
+        else interim += result[0].transcript;
+      }
+      eventTitle.value = (finalTranscript + interim).trim();
+    });
+
+    recognition.addEventListener('end', () => {
+      if (!recording) return;
+      recording = false;
+      micBtn.classList.remove('recording');
+      micLabel.textContent  = t().record;
+      voiceStatus.textContent = '';
+      voiceStatus.className   = 'voice-status';
+
+      const text = finalTranscript.trim();
+      if (!text) {
+        voiceStatus.textContent = t().notHeard;
+        voiceStatus.className   = 'voice-status error';
+        return;
+      }
+      eventTitle.value = text;
+      // Open form and focus date so user can complete the event
+      if (!addForm.classList.contains('open')) addForm.classList.add('open');
+      eventDate.focus();
+    });
+
+    recognition.addEventListener('error', (e) => {
+      recording = false;
+      micBtn.classList.remove('recording');
+      micLabel.textContent    = t().record;
+      voiceStatus.className   = 'voice-status error';
+      voiceStatus.textContent = e.error === 'not-allowed'
+        ? t().micDenied
+        : `${t().voiceErr}${e.error}`;
+    });
+
+    micBtn.addEventListener('click', () => {
+      if (recording) { recognition.stop(); return; }
+      finalTranscript         = '';
+      eventTitle.value        = '';
+      recording               = true;
+      micBtn.classList.add('recording');
+      micLabel.textContent    = t().stop;
+      voiceStatus.textContent = t().listening;
+      voiceStatus.className   = 'voice-status';
+      // Open the form so the user can see the transcription happening
+      if (!addForm.classList.contains('open')) addForm.classList.add('open');
+      recognition.start();
+    });
+  }
+
+  // ── Language toggle ───────────────────────────────────────────────────
+  document.getElementById('langEn').addEventListener('click', () => applyLang('en'));
+  document.getElementById('langSv').addEventListener('click', () => applyLang('sv'));
+
+  // ── Init ──────────────────────────────────────────────────────────────
+  applyLang(currentLang);
+  if (familyCode && familyName) {
+    showCalendar();
+  } else {
+    showJoin();
+  }
+</script>
+</body>
+</html>
